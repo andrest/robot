@@ -1,6 +1,7 @@
 package Rumbaugh;
 
 import Rumbaugh.Robot.*;
+import Rumbaugh.View.RobotUserInterface;
 
 /**
  * This is the main starting point of the application
@@ -27,7 +28,7 @@ public class MainApp{
 			else if(args[i].equals("-solo"))
 			{
 				Solo solo = new Solo();
-				Multi multi = new Multi();
+				//Multi multi = new Multi();
 				solo.makeRobotMove();
 				//multi.makeRobotMove();
 			}
@@ -37,7 +38,7 @@ public class MainApp{
 			}
 			else if(args[i].equals("-gui"))
 			{
-				//This is where the code for the GUI will go
+				new RobotUserInterface().setVisible(true);
 			}
 		}
 	}
