@@ -1,4 +1,4 @@
-package com.Rumbaugh.Robot;
+package Rumbaugh.Robot;
 
 import javax.swing.plaf.SliderUI;
 

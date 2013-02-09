@@ -1,7 +1,6 @@
-package com.Rumbaugh;
+package Rumbaugh;
 
-import com.Rumbaugh.Robot.Multi;
-import com.Rumbaugh.Robot.Solo;
+import Rumbaugh.Robot.*;
 
 /**
  * This is the main starting point of the application

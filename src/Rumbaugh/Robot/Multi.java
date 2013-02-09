@@ -1,4 +1,4 @@
-package com.Rumbaugh.Robot;
+package Rumbaugh.Robot;
 
 import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;

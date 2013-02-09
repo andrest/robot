@@ -1,4 +1,4 @@
-package com.Rumbaugh;
+package Rumbaugh;
 /*
  * This class provides a pattern correction method, used where the robot measurements
  * are not that accurate, especially corners.

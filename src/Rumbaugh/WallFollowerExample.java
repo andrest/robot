@@ -1,4 +1,4 @@
-package com.Rumbaugh;
+package Rumbaugh;
 
 /*
  *  Player Java Client 3 Examples - WallFollowerExample.java
