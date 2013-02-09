@@ -35,6 +35,10 @@ public class MainApp{
 			{
 				//this is where the multi code will go
 			}
+			else if(args[i].equals("-gui"))
+			{
+				//This is where the code for the GUI will go
+			}
 		}
 	}
 }
