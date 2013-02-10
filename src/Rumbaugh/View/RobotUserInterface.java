@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -138,13 +140,9 @@ public class RobotUserInterface extends JFrame {
 				{
 					JOptionPane.showMessageDialog(null, "Choose a mode of Operation", "Robot Operation Mode", JOptionPane.WARNING_MESSAGE);
 				}
-				else if(soloRadioButton.isSelected())
-				{
-					System.out.println(message+soloRadioButton.getText());
-				}
 				else
 				{
-					System.out.println(message+multiRadioButton.getText());
+					System.out.println(message+findModeSelection());
 				}
 			}
 		});
@@ -175,7 +173,7 @@ public class RobotUserInterface extends JFrame {
 				}
 				else
 				{
-					System.out.println("The collect button was pressed with coordinates \n X1: "+x1TextField.getText()+"\n Y1: "+y1TextField.getText()+"\n X2: "+x2TextField.getText()+"\n Y2: "+y2TextField.getText());
+					System.out.println("The collect button was pressed with coordinates \n X1: "+x1TextField.getText()+"\n Y1: "+y1TextField.getText()+"\n X2: "+x2TextField.getText()+"\n Y2: "+y2TextField.getText()+"\n Operation Mode: "+findModeSelection());
 				}
 			}
 		});
@@ -194,6 +192,26 @@ public class RobotUserInterface extends JFrame {
 		Pattern regexPattern = Pattern.compile(pattern);
 		Matcher matcher = regexPattern.matcher(validate);
 		return matcher.find();
+	}
+	
+	/**
+	 * This is method to return the operation
+	 * mode that the user has chosen on the user interface
+	 * @return The mode of operation that the robot
+	 * will follow, this will either be Solo or
+	 * Multi
+	 */
+	private String findModeSelection(){
+		Enumeration<AbstractButton> radioButtons = buttonGroup.getElements();
+		while(radioButtons.hasMoreElements())
+		{
+			AbstractButton modeButton = radioButtons.nextElement();
+			if(modeButton.isSelected())
+			{
+				return modeButton.getText();
+			}
+		}
+		return null;
 	}
 
 }
