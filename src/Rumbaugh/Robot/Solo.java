@@ -1,6 +1,7 @@
 package Rumbaugh.Robot;
 
-import javax.swing.plaf.SliderUI;
+
+import Rumbaugh.WallFollower;
 
 import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;
@@ -49,21 +50,14 @@ public class Solo {
 			System.out.println(exception);
 			System.exit(1);
 		}
+		robot.runThreaded(-1, -1);
 	}
 	
-	public void makeRobotMove(){
-		Thread robot_0 = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true)
-				{
-					pos2d_0.setSpeed(1, 0);
-				}
-			}
-		});
-		robot_0.start();
+	public void startMapping(){
+		WallFollower.run(robot, pos2d_0, sonar_0);
 	}
+
+
 
 	 
 }
