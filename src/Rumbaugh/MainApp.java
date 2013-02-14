@@ -29,9 +29,7 @@ public class MainApp{
                         else if(args[i].equals("-solo"))
                         {
                                 Solo solo = new Solo();
-                                //Multi multi = new Multi();
                                 solo.startMapping();
-                                //multi.makeRobotMove();
                         }
                         else if(args[i].equals("-multi"))
                         {
