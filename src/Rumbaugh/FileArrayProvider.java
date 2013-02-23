@@ -1,13 +1,10 @@
 package Rumbaugh;
 
-import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JFrame;
 
 public class FileArrayProvider {
     static String[][] strng = new String[15][15];

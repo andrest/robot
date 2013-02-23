@@ -1,6 +1,7 @@
 package Rumbaugh.View;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +48,7 @@ public class RobotUserInterface extends JFrame {
 	private ButtonGroup buttonGroup;
 	
 	private JPanel panelSouth;
+	private JPanel panelCentre;
 	
 	public RobotUserInterface(){
 		super("Robot User Interface");
@@ -83,6 +85,9 @@ public class RobotUserInterface extends JFrame {
 		
 		panelSouth = new JPanel();
 		
+		panelCentre = new JPanel();
+		panelCentre.setBackground(Color.BLACK);
+		
 		actionListeners();
 	}
 	
@@ -103,7 +108,7 @@ public class RobotUserInterface extends JFrame {
 	private void addWidgets(){
 		this.add(panelSouth, BorderLayout.SOUTH);
 		
-		this.add(mapLabel, BorderLayout.CENTER);
+		this.add(panelCentre, BorderLayout.CENTER);
 		
 		panelSouth.add(exploreButton);
 		panelSouth.add(mapButton);
