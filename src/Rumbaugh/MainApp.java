@@ -36,11 +36,16 @@ public class MainApp{
                         }
                         else if(args[i].equals("-map"))
                         {
-                                //this is where the map code will go
+                                String fileName = args[i + 1];
+                                System.out.println("The name of the file is: "+fileName);
                         }
                         else if(args[i].equals("-collect"))
                         {
-                                //This is where the collect code will go
+                                double x1 = Double.parseDouble(args[i + 1]);
+                                double y1 = Double.parseDouble(args[i + 2]);
+                                double x2 = Double.parseDouble(args[i + 3]);
+                                double y2 = Double.parseDouble(args[i + 4]);
+                                System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
                         }
                         else if(args[i].equals("-solo"))
                         {
