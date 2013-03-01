@@ -14,8 +14,8 @@ public class PatternCheck {
 	
 static void patternCorrect(int[][] a){
     	
-    	for(int i=3;i<WallFollower.h;i++)
-    		for(int j=3;j<WallFollower.l;j++)
+    	for(int i=3;i<RobotData.ARRAY_HEIGHT;i++)
+    		for(int j=3;j<RobotData.ARRAY_LENGTH;j++)
     		{
     			if(a[i][j]==1 && a[i][j+2]==1)
     				a[i][j+1]=1;
