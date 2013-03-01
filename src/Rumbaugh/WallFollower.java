@@ -36,30 +36,18 @@ public class WallFollower {
     static double tempPositionY = 0;
     static double tempYaw = 0;
     
-    static int l= 133;  // array length
-    static int h= 90;  // array height
-    static int[][] a = new int[h][l];   // the actual array
-    static int[][] chArray = new int[h][l];
-    static int aa=3;				// resolution
-    static int hOffset=15;
-    static int lOffset=22;
-    static int alfa= 0;
-    
+    static final int HEIGHT_OFFSET=15;
+    static final int LENGTH_OFFSET=22;
+
+    static int[][] map = RobotData.INSTANCE.getMap();
     
     public static void run (PlayerClient robot, Position2DInterface posi, RangerInterface rngi) {
-
-        
-        for(int i=0;i<h;i++)
-        	for(int j=0;j<l;j++){
-        		a[i][j]=0;
-        		chArray[i][j]=0;
-        	}
 
         
         // Go ahead and find a wall and align to it on the robot's left side
         getWall (posi, rngi);
         
-        while (!PatternCheck.outerWallDone(chArray)) {
+        while (!PatternCheck.outerWallDone(map)) {
             // get all SONAR values and perform the necessary adjustments
             getSonars (rngi);
             xSpeed   = SPEED;
@@ -102,10 +90,10 @@ public class WallFollower {
             		var2 = (Math.cos(((Math.PI)/2) - Math.abs(tempYaw))) * tempLeftSide;
             	
             		if(tempYaw>0){
-            			a[(int)Math.round(h - aa*(hOffset+(tempPositionY + var1)))][(int)Math.round(aa*(lOffset+(tempPositionX - var2)))] = 1;
+            			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] = 1;
             		}
             		if(tempYaw<0){
-            			a[(int)Math.round(h - aa*(hOffset+(tempPositionY + var1)))][(int)Math.round(aa*(lOffset+(tempPositionX + var2)))] = 1;
+            			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var2)))] = 1;
             		}
             	}
             
@@ -115,21 +103,20 @@ public class WallFollower {
             		var2 = (Math.cos((Math.PI) - Math.abs(tempYaw))) * tempLeftSide;
             	
             		if(tempYaw>0){
-            			a[(int)Math.round(h - aa*(hOffset+(tempPositionY - var2)))][(int)Math.round(aa*(lOffset+(tempPositionX - var1)))] = 1;
+            			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var1)))] = 1;
             		}
             		if(tempYaw<0){
-            			a[(int)Math.round(h - aa*(hOffset+(tempPositionY - var2)))][(int)Math.round(aa*(lOffset+(tempPositionX + var1)))] = 1;
+            			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] = 1;
             		}
             	}
             }
             	
             // Move the robot
             posi.setSpeed (xSpeed, yawSpeed);
-           	PatternCheck.patternCorrect(a);
-            for(int i=0;i<h;i++){
-            	for(int j=0;j<l;j++){
-            		System.out.print(a[i][j]+" ");
-            		chArray[i][j]= a[i][j];
+           	PatternCheck.patternCorrect(map);
+            for(int i=0;i<RobotData.ARRAY_HEIGHT;i++){
+            	for(int j=0;j<RobotData.ARRAY_LENGTH;j++){
+            		System.out.print(map[i][j]+" ");
             	}
             	System.out.println();
             }
