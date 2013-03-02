@@ -40,14 +40,17 @@ public class WallFollower {
     static final int LENGTH_OFFSET=22;
 
     static int[][] map = RobotData.INSTANCE.getMap();
+    static int[][] varMap = new int[RobotData.ARRAY_HEIGHT][RobotData.ARRAY_LENGTH];
     
     public static void run (PlayerClient robot, Position2DInterface posi, RangerInterface rngi) {
 
         
         // Go ahead and find a wall and align to it on the robot's left side
         getWall (posi, rngi);
-        
-        while (!PatternCheck.outerWallDone(map)) {
+        for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
+        	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
+        varMap[i][j]= map[i][j];
+        while (!PatternCheck.outerWallDone(varMap)) {
             // get all SONAR values and perform the necessary adjustments
             getSonars (rngi);
             xSpeed   = SPEED;
@@ -114,19 +117,17 @@ public class WallFollower {
             // Move the robot
             posi.setSpeed (xSpeed, yawSpeed);
            	PatternCheck.patternCorrect(map);
-           	/*
-            for(int i=0;i<RobotData.ARRAY_HEIGHT;i++){
-            	for(int j=0;j<RobotData.ARRAY_LENGTH;j++){
-            		System.out.print(map[i][j]+" ");
-            	}
-            	System.out.println();
-            }
-        	System.out.println("\n______________________________________________________________________________________________________________________________________________________");
-        	*/
+            for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
+            	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
+            varMap[i][j]= map[i][j];
+        	
             try { Thread.sleep (100); } catch (Exception e) { }
     
         }
+        PatternCheck.floodFill(0, 0, map);
+       	PatternCheck.wallCorrect(map);
         posi.setSpeed(0, 0);
+
         System.out.println("Finished mapping outer wall");
     }
     
