@@ -3,14 +3,18 @@ package Rumbaugh.View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+
+import Rumbaugh.RobotData;
 
 /**
  * This is the class for the user
@@ -84,10 +90,10 @@ public class RobotUserInterface extends JFrame {
 		buttonGroup.add(multiRadioButton);
 		
 		panelSouth = new JPanel();
-		
-		panelCentre = new JPanel();
+
+		panelCentre = RobotData.INSTANCE.getImagePanel();
 		panelCentre.setBackground(Color.BLACK);
-		
+
 		actionListeners();
 	}
 	

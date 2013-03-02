@@ -114,6 +114,7 @@ public class WallFollower {
             // Move the robot
             posi.setSpeed (xSpeed, yawSpeed);
            	PatternCheck.patternCorrect(map);
+           	/*
             for(int i=0;i<RobotData.ARRAY_HEIGHT;i++){
             	for(int j=0;j<RobotData.ARRAY_LENGTH;j++){
             		System.out.print(map[i][j]+" ");
@@ -121,7 +122,7 @@ public class WallFollower {
             	System.out.println();
             }
         	System.out.println("\n______________________________________________________________________________________________________________________________________________________");
-        	
+        	*/
             try { Thread.sleep (100); } catch (Exception e) { }
     
         }
