@@ -1,6 +1,7 @@
 package Rumbaugh.Robot;
 
 
+import Rumbaugh.RobotData;
 import Rumbaugh.WallFollower;
 
 import javaclient3.FiducialInterface;
@@ -54,6 +55,7 @@ public class Solo {
 	}
 	
 	public void startMapping(){
+		RobotData.INSTANCE.initMap();
 		WallFollower.run(robot, pos2d_0, sonar_0);
 	}
 

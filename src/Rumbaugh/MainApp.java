@@ -13,7 +13,6 @@ import Rumbaugh.View.RobotUserInterface;
 public class MainApp{
 	private static String robotMode;
         public static void main(String [] args){
-            	RobotData.INSTANCE.initMap();
                 for(int i = 0; i < args.length; i++)
                 {
                         if(args[i].equals("-explore"))

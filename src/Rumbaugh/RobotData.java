@@ -34,11 +34,12 @@ public enum RobotData {
 		mapArray = new int[ARRAY_HEIGHT][ARRAY_LENGTH]; 
 		timer = new Timer();
 		
-        for(int i=0;i<ARRAY_HEIGHT;i++)
-        	for(int j=0;j<ARRAY_LENGTH;j++){
-        		mapArray[i][j]=0;
-        	}
-        
+        resetArray(mapArray);
+        startUpdatingImage();
+
+	}
+	
+	private void startUpdatingImage() {
         // Update the mapImage every 750ms
         timer.schedule( new TimerTask() {
             public void run() {
@@ -49,6 +50,18 @@ public enum RobotData {
             	}
     		}
     	}, 0, 750);
+	}
+	
+	public void stopUpdatingImage() {
+		timer.cancel();
+		timer.purge();
+	}
+	
+	private void resetArray(int[][] array) {
+        for(int i=0;i<ARRAY_HEIGHT;i++)
+        	for(int j=0;j<ARRAY_LENGTH;j++){
+        		array[i][j]=0;
+        	}
 	}
     
 
@@ -116,6 +129,7 @@ public enum RobotData {
 			@Override
 		    public void paintComponent(Graphics g) {
 		        super.paintComponent(g);
+		        if (mapImage == null) return;
 		        g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
 		    }
 			@Override  
