@@ -15,54 +15,54 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public enum RobotData {
-	INSTANCE;
+        INSTANCE;
 
-	public static final int ARRAY_LENGTH = 133;
-	public static final int ARRAY_HEIGHT = 90;
-	public static final int RESOLUTION = 3;
-	public static final int SCALE = 1000;
-	
-	private static int[][] mapArray;
-	private static Timer timer;
-	private static Image mapImage;
-	private JPanel panel;
-	
-	RobotData() { }
-	
-	// Initalise the map with zeroes
-	public void initMap() {
-		mapArray = new int[ARRAY_HEIGHT][ARRAY_LENGTH]; 
-		timer = new Timer();
-		
+        public static final int ARRAY_LENGTH = 133;
+        public static final int ARRAY_HEIGHT = 90;
+        public static final int RESOLUTION = 3;
+        public static final int SCALE = 1000;
+        
+        private static int[][] mapArray;
+        private static Timer timer;
+        private static Image mapImage;
+        private JPanel panel;
+        
+        RobotData() { }
+        
+        // Initalise the map with zeroes
+        public void initMap() {
+                mapArray = new int[ARRAY_HEIGHT][ARRAY_LENGTH]; 
+                timer = new Timer();
+                
         resetArray(mapArray);
         startUpdatingImage();
 
-	}
-	
-	private void startUpdatingImage() {
+        }
+        
+        private void startUpdatingImage() {
         // Update the mapImage every 750ms
         timer.schedule( new TimerTask() {
             public void run() {
-            	if (panel != null) {
-            		mapImage = toImage(mapArray).getScaledInstance(SCALE, -1, Image.SCALE_FAST);
-        			panel.repaint();
-        			panel.revalidate();
-            	}
-    		}
-    	}, 0, 750);
-	}
-	
-	public void stopUpdatingImage() {
-		timer.cancel();
-		timer.purge();
-	}
-	
-	private void resetArray(int[][] array) {
+                if (panel != null) {
+                        mapImage = toImage(mapArray).getScaledInstance(SCALE, -1, Image.SCALE_FAST);
+                                panel.repaint();
+                                panel.revalidate();
+                }
+                }
+        }, 0, 750);
+        }
+        
+        public void stopUpdatingImage() {
+                timer.cancel();
+                timer.purge();
+        }
+        
+        private void resetArray(int[][] array) {
         for(int i=0;i<ARRAY_HEIGHT;i++)
-        	for(int j=0;j<ARRAY_LENGTH;j++){
-        		array[i][j]=0;
-        	}
-	}
+                for(int j=0;j<ARRAY_LENGTH;j++){
+                        array[i][j]=0;
+                }
+        }
     
 
     /**
@@ -93,53 +93,53 @@ public enum RobotData {
 
         for(int y=0; y< height; y++){
             for(int x=0; x< width; x++){
-            	
-            	int color;
-            	switch (map[y][x]) {
-            		case 0:
-            			color = Color.WHITE.getRGB();
-            			break;
-            		case 1:
-            			color = Color.BLACK.getRGB();
-            			break;
-            		case 2:
-            			color = Color.BLUE.getRGB();
-            			break;
-            		case 3:
-            			color = Color.CYAN.getRGB();
-            			break;
-            		default:
-            			color = Color.DARK_GRAY.getRGB();
-            			break;
-            	}
-            	bufferedImage.setRGB(x,y,color);
+                
+                int color;
+                switch (map[y][x]) {
+                        case 0:
+                                color = Color.WHITE.getRGB();
+                                break;
+                        case 1:
+                                color = Color.BLACK.getRGB();
+                                break;
+                        case 2:
+                                color = Color.BLUE.getRGB();
+                                break;
+                        case 3:
+                                color = Color.GRAY.getRGB();
+                                break;
+                        default:
+                                color = Color.DARK_GRAY.getRGB();
+                                break;
+                }
+                bufferedImage.setRGB(x,y,color);
             }
         }
         return bufferedImage;  
     }
 
-	public Image getMapImage() { return mapImage; };
-	public int[][] getMap() { return mapArray; }
+        public Image getMapImage() { return mapImage; };
+        public int[][] getMap() { return mapArray; }
     public void setMap(int[][] map) { mapArray = map; }
 
-	public JPanel getImagePanel() {
-		JPanel panel = new JPanel() {
-			private static final long serialVersionUID = 1L;
+        public JPanel getImagePanel() {
+                JPanel panel = new JPanel() {
+                        private static final long serialVersionUID = 1L;
 
-			@Override
-		    public void paintComponent(Graphics g) {
-		        super.paintComponent(g);
-		        if (mapImage == null) return;
-		        g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
-		    }
-			@Override  
-			public Dimension getPreferredSize(){
-				if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
-				return new Dimension(mapImage.getWidth(null), mapImage.getHeight(null));  
-			}  
-		};
-		this.panel = panel;
-		return panel;
-	}
+                        @Override
+                    public void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        if (mapImage == null) return;
+                        g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
+                    }
+                        @Override  
+                        public Dimension getPreferredSize(){
+                                if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
+                                return new Dimension(mapImage.getWidth(null), mapImage.getHeight(null));  
+                        }  
+                };
+                this.panel = panel;
+                return panel;
+        }
     
 }
