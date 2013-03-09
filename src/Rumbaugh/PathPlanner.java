@@ -1,5 +1,6 @@
 package Rumbaugh;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -75,9 +76,9 @@ public class PathPlanner {
 	 * @return An array list with the path between the two nodes.
 	 */
 	
-	public ArrayList<String> reconstructPath(){
+	public ArrayList<Point> reconstructPath(){
 		ArrayList<String> s = new ArrayList<String>();
-		ArrayList<String> reversed = new ArrayList<String>();
+		ArrayList<Point> reversed = new ArrayList<Point>();
 		String s1= target;
 		s.add(s1);
 		for(int i= parent.size()-1;i>0;i--){
@@ -87,7 +88,7 @@ public class PathPlanner {
 			}
 		}
 		for(int i = s.size()-1;i>=0;i--){
-			reversed.add(s.get(i));
+			reversed.add(new Point(Integer.parseInt(s.get(i).split(" ")[0]), Integer.parseInt(s.get(i).split(" ")[1])));
 		}
 		
 		return reversed;

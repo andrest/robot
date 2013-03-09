@@ -1,5 +1,6 @@
 package Rumbaugh;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,21 +8,20 @@ import java.util.ArrayList;
 
 
 public class FileArrayProvider {
-    static String[][] strng = new String[15][15];
+    static ArrayList<String[]> strng = new ArrayList<String[]>();
     static String[][] str;
 
     public static String[][] readLines(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-        String line = null;
-        for(int i=0;i<14;i++){
-        		line= bufferedReader.readLine();
-        		for (int j=0;j<14;j++)
-        			strng[i][j]=line.split(" ")[j];
+        String line = "";
+        while((line = bufferedReader.readLine()) != null) {
+        		String[] lineArray = line.split(" ");
+        		strng.add(lineArray);
         }
         bufferedReader.close();
-        return strng;
+        return strng.toArray(new String[0][0]);
     }
     public static void main(String[] args) throws IOException{
     	str = readLines("src/Rumbaugh/testfile.txt");
@@ -35,10 +35,10 @@ public class FileArrayProvider {
 
     	PathPlanner pth = new PathPlanner(str);
   
-    	pth.Asearch("4 7 0", "9 7");
-    	ArrayList<String> al = pth.reconstructPath();
+    	pth.Asearch("4 4 0", "18 30");
+    	ArrayList<Point> al = pth.reconstructPath();
     	for(int i=0;i<al.size();i++)
-    		System.out.println(al.get(i));
+    		System.out.println(al.get(i).x + " " + al.get(i).y);
     	
     	
     }
