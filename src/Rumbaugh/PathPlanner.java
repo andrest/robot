@@ -28,8 +28,10 @@ public class PathPlanner {
 		strArray = mapStr;
 	}
 	
-	public void Asearch(String start, String goal){
-		
+	public void Asearch(Point startPoint, Point goalPoint){
+		String start = startPoint.x + " " + startPoint.y + " 0";
+		String goal = goalPoint.x + " " + goalPoint.y;
+				
 		target = goal;
 		openset.add(start);
 		openset2.add(process(start));
@@ -68,6 +70,10 @@ public class PathPlanner {
 		
 	}
 
+	public ArrayList<Point> getPath(Point start, Point end) {
+		Asearch(start, end);
+		return reconstructPath();
+	}
 	
 	/**
 	 * This method reconstructs the path, starting at
@@ -76,7 +82,7 @@ public class PathPlanner {
 	 * @return An array list with the path between the two nodes.
 	 */
 	
-	public ArrayList<Point> reconstructPath(){
+	private ArrayList<Point> reconstructPath(){
 		ArrayList<String> s = new ArrayList<String>();
 		ArrayList<Point> reversed = new ArrayList<Point>();
 		String s1= target;

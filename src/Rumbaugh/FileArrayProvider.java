@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class FileArrayProvider {
     static ArrayList<String[]> strng = new ArrayList<String[]>();
-    static String[][] str;
+    static String[][] mapArray;
 
-    public static String[][] readLines(String filename) throws IOException {
+    public static String[][] mapFromFile(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -24,7 +24,7 @@ public class FileArrayProvider {
         return strng.toArray(new String[0][0]);
     }
     public static void main(String[] args) throws IOException{
-    	str = readLines("src/Rumbaugh/testfile.txt");
+    	mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
 /**    	floodFill(5,5);
     	for(int i=0;i<15;i++){
     		for (int j=0;j<15;j++)
@@ -33,21 +33,21 @@ public class FileArrayProvider {
     	}
 */
 
-    	PathPlanner pth = new PathPlanner(str);
+    	PathPlanner planner = new PathPlanner(mapArray);
   
-    	pth.Asearch("4 4 0", "18 30");
-    	ArrayList<Point> al = pth.reconstructPath();
-    	for(int i=0;i<al.size();i++)
-    		System.out.println(al.get(i).x + " " + al.get(i).y);
+    	ArrayList<Point> path = planner.getPath(new Point(4,4), new Point(18,30));
+
+    	for(int i=0;i<path.size();i++)
+    		System.out.println(path.get(i).x + " " + path.get(i).y);
     	
     	
     }
     
     public static void floodFill(int x, int y) {
 
-        if (!str[x][y].equalsIgnoreCase("0")) return;
+        if (!mapArray[x][y].equalsIgnoreCase("0")) return;
 
-        str[x][y]= "8";
+        mapArray[x][y]= "8";
         if(x>0)
         floodFill(x - 1, y);
         if(x<14)
