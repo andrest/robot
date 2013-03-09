@@ -24,11 +24,9 @@ static void patternCorrect(int[][] a){
     				for(int k=i-1;k<= i+1;k++)
     					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 1)
-    							a[i][j] = 3;
+    							a[i][j] = 3; 
     			if(a[i][j] == 0){
-    				if(a[i][j-1] == 3 && a[i][j+1] == 3)
-    					a[i][j] = 3;
-    				if(a[i-1][j] == 3 && a[i+1][j] == 3)
+    				if(a[i][j-1] == 3 && a[i][j+1] == 3  && a[i-1][j] == 3 && a[i+1][j] == 3)
     					a[i][j] = 3;
     			}
     		}

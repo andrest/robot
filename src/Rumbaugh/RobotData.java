@@ -17,10 +17,10 @@ import javax.swing.JPanel;
 public enum RobotData {
         INSTANCE;
 
-        public static final int ARRAY_LENGTH = 133;
-        public static final int ARRAY_HEIGHT = 90;
-        public static final int RESOLUTION = 3;
-        public static final int SCALE = 1000;
+        public static final int ARRAY_LENGTH = 180;
+        public static final int ARRAY_HEIGHT = 120;
+        public static final int RESOLUTION = 4;
+        public static final int SCALE = 800;
         
         private static int[][] mapArray;
         private static Timer timer;

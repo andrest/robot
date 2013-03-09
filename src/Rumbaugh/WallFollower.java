@@ -7,7 +7,7 @@ import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 
-public class WallFollower implements Runnable{
+public class WallFollower{
     
     
     // define minimum/maximum allowed values for the SONAR sensors
@@ -33,9 +33,12 @@ public class WallFollower implements Runnable{
     static double var2 = 0;
     static double tempLeftSide = 0;
     static double tempPositionX = 0;
+    static double tempPositionX1 = 0;
     static double tempPositionY = 0;
+    static double tempPositionY1 = 0;
     static double tempSonar = 0;
     static double tempYaw = 0;
+    static double tempYaw1 = 0;
     static Position2DInterface pos;
     static double startX;
     static double startY;
@@ -49,12 +52,16 @@ public class WallFollower implements Runnable{
     
     public static void map (PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid) {
 
-    	Thread t1 = new Thread(new WallFollower());
+    	Thread t1 = new Thread(new ThreadedClass());
     	
         pos = posi;
+        while(!posi.isDataReady());
+        tempPositionX1 = posi.getX();
+        tempPositionY1 = posi.getY();
+        tempYaw1 = posi.getYaw();
         // Go ahead and find a wall and align to it on the robot's left side
     	getSonars(rngi);
-   // 	t1.start();
+    	t1.start();
        	
         getWall (posi, rngi);
         for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
@@ -77,7 +84,7 @@ public class WallFollower implements Runnable{
                 xSpeed   = -0.10f;
                 yawSpeed = - DEF_YAW_SPEED * 3;
             } else
-            	if(leftSide > 2.5 && frontSide > 0.5)
+            	if(leftSide > 2.5)
             		turnLeft(posi);
             	else
                 // if we're getting too close to the wall with the left side...
@@ -107,9 +114,9 @@ public class WallFollower implements Runnable{
             	tempLeftSide = sonarValues [4];
             	mapWalls();
             }
-            System.out.println(System.nanoTime());
             while(!fid.isDataReady());
             PlayerFiducialItem[] data = fid.getData().getFiducials();
+            if(data.length>0)
             mapGarbage(posi, fid);
          
             // Move the robot
@@ -218,7 +225,9 @@ public class WallFollower implements Runnable{
     	posi.setSpeed(0.15, 0.3);
     	while(a<100){
     		a++;
-    		mapWalls();
+    		if(a%10 == 0 ){
+    			mapWalls();
+    		}
     		try{Thread.sleep(50);}catch(Exception e) { }
     	}
     	posi.setSpeed(0, 0);
@@ -266,51 +275,61 @@ public class WallFollower implements Runnable{
     static void mapExplored(int ind, Position2DInterface posi){
  
         while(!posi.isDataReady());
-		tempPositionX = posi.getX();
-		tempPositionY = posi.getY();
+		tempPositionX1 = posi.getX();
+		tempPositionY1 = posi.getY();
 		while(!posi.isDataReady());
-		tempYaw = posi.getYaw();
+		tempYaw1 = posi.getYaw();
 			tempSonar = sonarValues[ind];
 		double angle = 0;
 		switch (ind) {
 		case 5:
-			angle = tempYaw+ Math.PI/6;
+			angle = tempYaw1+ Math.PI/6;
 			break;
 		case 6:
-			angle = tempYaw + Math.PI/12;
+			angle = tempYaw1 + Math.PI/12;
 			break;
 		case 7:
-			angle = tempYaw - Math.PI/6;
+			angle = tempYaw1 - Math.PI/6;
 			break;
 		case 8:
-			angle = tempYaw - Math.PI/12;
+			angle = tempYaw1 - Math.PI/12;
 			break;
 		}
 		tempSonar = Math.min(tempSonar, 2.5);
+		
 		while(tempSonar>0.0){
+			double var11, var22;
 			if(Math.abs(angle)<=((Math.PI)/2)){
     		
-				var1 = (Math.sin(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
-				var2 = (Math.cos(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
-    	
-				if(angle>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] == 0){
-					map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] = 3;
+			var11 = (Math.sin(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
+			var22 = (Math.cos(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
+			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 + var22)));
+			int indY1 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 + var11)));
+			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 - var22)));
+			int indY2 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 + var11)));
+			if(angle>0 && map[indX1][indY1] == 0){
+					
+					map[indX1][indY1] = 3;
 				}
-				else if(angle<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] == 0){
-					map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] = 3;
+				else if(angle<0 && map[indX2][indY2] == 0){
+					map[indX2][indY2] = 3;
 				}
 
 			}
     
 			else if(Math.abs(angle)>((Math.PI)/2)){
-    			var1 = (Math.sin((Math.PI) - Math.abs(angle))) * tempSonar;
-    			var2 = (Math.cos((Math.PI) - Math.abs(angle))) * tempSonar;
-    	
-    				if(angle>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] == 0){
-    					map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] = 3;
+    			var11 = (Math.sin((Math.PI) - Math.abs(angle))) * tempSonar;
+    			var22 = (Math.cos((Math.PI) - Math.abs(angle))) * tempSonar;
+    			
+    			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 + var11)));
+    			int indY1 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 - var22)));
+    			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 - var11)));
+    			int indY2 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 - var22)));
+    				if(angle>0 && map[indX1][indY1] == 0){
+    					map[indX1][indY1] = 3;
     				}
-    				else if(angle<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] == 0){
-    					map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] = 3;
+    				else if(angle<0 && map[indX2][indY2] == 0){
+    					map[indX2][indY2] = 3;
     				}
     		
     		}
@@ -353,13 +372,17 @@ public class WallFollower implements Runnable{
     	}
        	PatternCheck.patternCorrect(map);
     }
-    
-    	public void run(){
-    		while(true){
-    		mapExplored(7, pos);
-    		try { Thread.sleep(2000); } catch (Exception e) {}
-    		}
-    	}
     	 
     
+}
+class ThreadedClass implements Runnable{
+
+	@Override
+	public void run() {
+		while(true){
+		WallFollower.mapExplored(7, WallFollower.pos);
+		try { Thread.sleep(500); } catch (Exception e) {}
+		}		
+	}
+	
 }
