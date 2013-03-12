@@ -25,7 +25,76 @@ public class PathPlanner {
 
 	
 	public PathPlanner(String[][] mapStr){
+		
 		strArray = mapStr;
+		
+		for(int i=0; i < strArray.length; i++) {
+			String[] row = strArray[i];
+			for(int j=0; j < row.length; j++) {
+				System.out.print(strArray[i][j] + " ");
+			}
+			System.out.println();
+		}
+		/*
+		for(int i=strArray.length-1; i >= 1; i--) {
+			String[] row = strArray[i];
+			for(int j=row.length-1; j >= 1; j--) {
+				String cell = strArray[i][j];
+				if (strArray[i-1][j-1].equals("0") && strArray[i][j-1].equals("0") &&
+					strArray[i-1][j].equals("0") && strArray[i][j].equals("0")) {
+				} else {
+					strArray[i][j] = "1";
+				}
+				
+						
+				
+			}
+		}
+		
+*/
+		for(int j=0; j < strArray[0].length; j++) {
+
+			int start = -1, end = -1, zeroCounter = 0;
+			for(int i=0; i < strArray.length; i++) {
+				String[] row = strArray[i];
+				if (strArray[i][j].equals("1")){
+					if(start == -1) start = i;
+					if(zeroCounter > 2) {
+						strArray[start+1][j] = "1";
+						strArray[i-1][j] = "1";
+						start = i;
+						zeroCounter = 0;
+					} else start = i;
+				} else zeroCounter++;
+
+			}
+		}
+		
+		for(int i=0; i < strArray.length; i++) {
+			int start = -1, end = -1, zeroCounter = 0;
+			for(int j=0; j < strArray[0].length; j++) {
+				if (strArray[i][j].equals("1")){
+					if(start == -1) start = j;
+					if(zeroCounter > 2) {
+						strArray[i][start+1] = "1";
+						strArray[i][j-1] = "1";
+						start = j;
+						zeroCounter = 0;
+					} else start = j;
+				} else zeroCounter++;
+
+			}
+		}
+		
+		
+		for(int i=0; i < strArray.length; i++) {
+			String[] row = strArray[i];
+			for(int j=0; j < row.length; j++) {
+				System.out.print(strArray[i][j] + " ");
+			}
+			System.out.println();
+		}
+
 	}
 	
 	public void Asearch(Point startPoint, Point goalPoint){
