@@ -35,7 +35,7 @@ public class PathPlanner {
 			}
 			System.out.println();
 		}
-		/*
+		
 		for(int i=strArray.length-1; i >= 1; i--) {
 			String[] row = strArray[i];
 			for(int j=row.length-1; j >= 1; j--) {
@@ -49,9 +49,9 @@ public class PathPlanner {
 						
 				
 			}
-		}
+		} 
 		
-*/
+
 		for(int j=0; j < strArray[0].length; j++) {
 
 			int start = -1, end = -1, zeroCounter = 0;
@@ -69,7 +69,7 @@ public class PathPlanner {
 
 			}
 		}
-		
+		/*
 		for(int i=0; i < strArray.length; i++) {
 			int start = -1, end = -1, zeroCounter = 0;
 			for(int j=0; j < strArray[0].length; j++) {
@@ -85,7 +85,7 @@ public class PathPlanner {
 
 			}
 		}
-		
+		*/
 		
 		for(int i=0; i < strArray.length; i++) {
 			String[] row = strArray[i];
@@ -95,6 +95,11 @@ public class PathPlanner {
 			System.out.println();
 		}
 
+	}
+	
+	public void goToPoint(Point target) {
+		
+		
 	}
 	
 	public void Asearch(Point startPoint, Point goalPoint){
@@ -259,7 +264,7 @@ public class PathPlanner {
 	public String process(String string){
 		return string.split(" ")[0] + " " + string.split(" ")[1];
 	}
-	public ArrayList<Point> straightLines( ArrayList<Point> array){
+	public ArrayList<Point> straightLines(ArrayList<Point> array){
 		ArrayList<Point> sLines = new ArrayList<Point>();
 		sLines.add(array.get(0));
 		int prevDir = getDirection(array.get(0), array.get(1));
