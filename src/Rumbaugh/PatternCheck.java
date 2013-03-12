@@ -1,5 +1,6 @@
 package Rumbaugh;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -72,6 +73,7 @@ public static void floodFill(int x, int y, int[][] array) {
 
 
 	Queue<String> queue = new LinkedList<String>();
+	int counter = 0;
 	queue.add(array[x][y]+ " "+ x + " "+y);
 	String s;
 	int w,e;
@@ -112,16 +114,91 @@ public static void floodFill(int x, int y, int[][] array) {
 
 }
 
-public static boolean outerWallDone(int[][] array){
+public static int UnexploredFloodFill(int x, int y, int[][] array) {
+
+
+	Queue<String> queue = new LinkedList<String>();
+	ArrayList<String> changed = new ArrayList<String>();
+	int counter = 0;
+	queue.add(array[x][y]+ " "+ x + " "+y);
+	String s;
+	int w,e;
+	while(!queue.isEmpty()){
+		s = queue.remove();
+		if(s.startsWith("0")){
+			
+			x=Integer.parseInt(s.split(" ")[1]);
+			y=Integer.parseInt(s.split(" ")[2]);
+			w=y;
+			e=y;
+			boolean b= true;
+			while(w>0 && b){
+				if(array[x][w-1] == 0){
+					w--;
+				}
+				else
+					b=false;
+			}
+		
+			b= true;
+				while(e<RobotData.ARRAY_LENGTH-1 && b)
+					if(array[x][e+1] == 0){
+						e++;
+					}
+					else 
+						b= false;
+			
+			for(int j= w;j<=e;j++){
+				array[x][j]= 8;
+			if(!changed.contains(x + " " + j))
+				changed.add(x + " " + j);
+				if(x>0)
+					if(array[x-1][j] == 0){
+						queue.add(array[x-1][j] + " " + (x-1) +" "+ j);
+						
+					}
+				if(x<RobotData.ARRAY_HEIGHT - 1)
+					if(array[x+1][j] == 0){
+						queue.add(array[x+1][j] + " " + (x+1) + " " + j);
+			
+					}
+			}
+		}
+
+	}
+	return changed.size();
+
+}
+
+
+
+public static boolean outerWallDone(int[][] array, int x, int y){
 
 	boolean b= false;
-	floodFill(0 ,0 , array);
+	floodFill(x ,y , array);
 	
 	for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
 		for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
-			if(array[i][j]==0)
+			if(array[i][j]== 0 || array[i][j] == 3)
 				b = true;
 	return b;
 }
+
+public static String getClosestUnexplored(int x, int y, int[][] map){
+	double distance;
+	double prev = 1000;
+	String coordinates = null;
+	for(int i=0;i<map.length;i++)
+		for(int j=0;j<map[0].length;j++)
+			if(map[i][j] == 0 && (i!= x || j!= y)){
+				distance = Math.sqrt(((i - x)* (i - x)) + ((j - y)* (j - y)));
+				if(distance < prev){
+					prev = distance;
+					coordinates = i + " " +  j;
+				}
+			}
+	return coordinates;
+}
+
 }
 

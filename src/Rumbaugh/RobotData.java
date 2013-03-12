@@ -23,6 +23,8 @@ public enum RobotData {
         public static final int SCALE = 800;
         
         private static int[][] mapArray;
+        private static int[][] usedArray;
+        
         private static Timer timer;
         private static Image mapImage;
         private JPanel panel;
@@ -35,12 +37,14 @@ public enum RobotData {
                 timer = new Timer();
                 
         resetArray(mapArray);
+
         startUpdatingImage();
 
         }
         
         private void startUpdatingImage() {
         // Update the mapImage every 750ms
+
         timer.schedule( new TimerTask() {
             public void run() {
                 if (panel != null) {
@@ -50,6 +54,59 @@ public enum RobotData {
                 }
                 }
         }, 0, 750);
+        }
+        
+        private int[][] getUsedMap(int[][] array){
+        	int x1 = 0; 
+        	int	x2 = ARRAY_HEIGHT-1; 
+        	int y1=0; 
+        	int y2 = ARRAY_LENGTH-1;
+        	boolean b = true;
+        	while(b){
+        			for(int j = 0;j<ARRAY_LENGTH/2.5;j++)
+        				if(array[x1][j] != 0)
+        					b = false;
+        			if(b && x1 < ARRAY_HEIGHT-1)
+        				x1 ++;
+        			b=false;
+        		
+        	}
+        	b=true;
+        	while (b){
+        		
+        			for(int j = 0; j< ARRAY_LENGTH/2.5;j++)
+        				if(array[x2][j]!= 0)
+        					b= false;
+        			if(b)
+        				x2 -- ;
+        			b=false;
+        		
+        	}
+        	b=true;
+        	while (b){
+        			for(int i=0;i<ARRAY_HEIGHT/2.5;i++)
+        				if(array[i][y1] != 0)
+        					b= false;
+        			if(b)
+        				y1 ++ ;
+        			b=false;
+        		
+        	}
+        	b= true;
+        	while(b){
+        			for(int i=0;i<ARRAY_HEIGHT/2.5;i++)
+        				if(array[i][y2] != 0)
+        					b=false;
+        			if(b)
+        				y2--;
+        			b= false;
+        		
+        	}
+        	int[][] newArray = new int[x2 - x1 + 1][y2 -y1 + 1];
+        	for(int i= 0; i<x2-x1+1; i++)
+        		for(int j=0;j<y2-y1+1;j++)
+        			newArray[i][j] = array[x1 + i][y1 + j];
+        	return newArray;
         }
         
         public void stopUpdatingImage() {
@@ -62,6 +119,7 @@ public enum RobotData {
                 for(int j=0;j<ARRAY_LENGTH;j++){
                         array[i][j]=0;
                 }
+       
         }
     
 

@@ -190,4 +190,38 @@ public class PathPlanner {
 	public String process(String string){
 		return string.split(" ")[0] + " " + string.split(" ")[1];
 	}
+	public ArrayList<Point> straightLines( ArrayList<Point> array){
+		ArrayList<Point> sLines = new ArrayList<Point>();
+		sLines.add(array.get(0));
+		int prevDir = getDirection(array.get(0), array.get(1));
+		for(int i= 2;i<array.size();i++){
+			if(prevDir != getDirection(array.get(i-1), array.get(i))){
+				sLines.add(array.get(i-1));
+				prevDir = getDirection(array.get(i-1), array.get(i));
+			}
+		}
+		sLines.add(array.get(array.size()-1));
+		
+		return sLines;
+	}
+	public int getDirection(Point p, Point q){
+		if(p.x == q.x && p.y+1 == q.y)
+			return 0;
+		else if(p.x == q.x+1 && p.y+1 == q.y)
+			return 1;
+		else if(p.x == q.x+1 && p.y == q.y)
+			return 2;
+		else if(p.x == q.x+1 && p.y == q.y+1)
+			return 3;
+		else if(p.x == q.x && p.y == q.y+1)
+			return 4;
+		else if(p.x+1 == q.x && p.y == q.y+1)
+			return 5;
+		else if(p.x+1 == q.x && p.y == q.y)
+			return 6;
+		else
+			return 7;
+	}
+	
+	
 }

@@ -39,7 +39,6 @@ public class WallFollower{
     static double tempSonar = 0;
     static double tempYaw = 0;
     static double tempYaw1 = 0;
-    static Position2DInterface pos;
     static double startX;
     static double startY;
     static double startYaw;
@@ -50,18 +49,111 @@ public class WallFollower{
     static int[][] map = RobotData.INSTANCE.getMap();
     static int[][] varMap = new int[RobotData.ARRAY_HEIGHT][RobotData.ARRAY_LENGTH];
     
-    public static void map (PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid) {
+    static PlayerClient robot;
+    static Position2DInterface posi;
+    static RangerInterface rngi;
+    static FiducialInterface fid;
 
+    public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid){
+    	this.robot = robot;
+    	this.posi = posi;
+    	this.rngi = rngi;
+    	this.fid = fid;
+    }
+    
+    public static void map(){
     	Thread t1 = new Thread(new ThreadedClass());
+    	t1.start();
+    	WallFollow();
+    	mapWhole();
+    }
+    
+    
+    public static void mapWhole(){
+    	boolean b = false;
+    	int i=0,j=0;
+    	while(i<map.length && !b){
+    		j=0;
+    		while(j<map[0].length){
+    		if(map[i][j] == 0)
+				b=true;
+    		j++;
+    		}
+    		i++;
+
+    	}    			
+    	System.out.println(b);
+
+    	if(b){    	
+    		goToUnexplored();
+    		System.out.println("Still unexplored areas remaining");
+    		mapWhole();
+    	}
+    	else{
+           	PatternCheck.wallCorrect(map);
+           	PatternCheck.patternCorrect(map);
+    		System.out.print("Finished mapping");
+    	}
+    }
+    
+    public static void goToUnexplored(){
+    	double tYaw;
     	
-        pos = posi;
+        int x = (int)Math.round(RobotData.ARRAY_HEIGHT -RobotData.RESOLUTION*(HEIGHT_OFFSET + tempPositionY));
+        int y = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+tempPositionX));
+    	String coor = PatternCheck.getClosestUnexplored(x, y, map);
+    	double tarX = Double.parseDouble(coor.split(" ")[0]);
+    	double tarY = Double.parseDouble(coor.split(" ")[1]);
+    	//path planning, going to unexplored
+    	map[x][y] = 2;
+    	map[(int)tarX][(int)tarY] = 2;
+    	tYaw= GoStraight.getAngle(tarY,tarX,y,x);
+        while (!posi.isDataReady());
+        double sign= posi.getYaw()-tYaw;
+        double delta =  Math.abs(GoStraight.roundedYaw(sign));
+        while (!GoStraight.inRange(delta,0)) {
+            while (!posi.isDataReady());
+            	sign =posi.getYaw()-tYaw;
+                delta = Math.abs(GoStraight.roundedYaw(sign));
+                if(sign<0)
+                posi.setSpeed(0,delta/GoStraight.FINALPREC);
+                else
+                    posi.setSpeed(0,delta/GoStraight.FINALPREC);
+
+                try {Thread.sleep(10);} catch (InterruptedException e) {}
+        }
+        posi.setSpeed(0,0);
+    	boolean bol=false;
+    	posi.setSpeed(0.7, 0);
+    	while(!bol){
+ 
+    		getSonars(rngi);
+    		
+    		if(sonarValues[0]<1 ||sonarValues[2]<1){
+    			bol=true;
+    			WallFollow();
+    		}
+    		
+       	try {Thread.sleep(10);} catch (InterruptedException e) {}
+    }
+    }
+    
+    public static void explore(){
+    	
+    }
+   
+    
+    public static void WallFollow () {
+
+    	
+    	
         while(!posi.isDataReady());
         tempPositionX1 = posi.getX();
         tempPositionY1 = posi.getY();
         tempYaw1 = posi.getYaw();
         // Go ahead and find a wall and align to it on the robot's left side
     	getSonars(rngi);
-    	t1.start();
+
        	
         getWall (posi, rngi);
         for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
@@ -150,13 +242,17 @@ public class WallFollower{
             try { Thread.sleep (100); } catch (Exception e) { }
     
         }
-        
-        PatternCheck.floodFill(0, 0, map);
-       	PatternCheck.wallCorrect(map);
-       	PatternCheck.patternCorrect(map);
+        int x = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET + tempPositionY));
+        int y = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+tempPositionX));
+        if(PatternCheck.outerWallDone(varMap,x,y)){
+ //       	System.out.print("Outer Wall Done");
+        	PatternCheck.floodFill(0, 0, map);
+        }
+        else
+        	System.out.print("Inner");
+
         posi.setSpeed(0, 0);
 
-        System.out.println("Finished mapping outer wall");
     }
     
     static void getWall (Position2DInterface posi, RangerInterface rngi) {
@@ -235,8 +331,8 @@ public class WallFollower{
     }
     static boolean validNeighbours(int i, int j){
     	boolean b= true;
-    	for(int k = i-1;k<=i+1;k++)
-    		for(int p = j-1;p<=j+1;p++)
+    	for(int k = i-2;k<=i+2;k++)
+    		for(int p = j-2;p<=j+2;p++)
     			if(k!= i || p != j)
     				if(map[k][p] == 2)
     					b= false;
@@ -294,6 +390,8 @@ public class WallFollower{
 		case 8:
 			angle = tempYaw1 - Math.PI/12;
 			break;
+		default :
+				angle = tempYaw1;
 		}
 		tempSonar = Math.min(tempSonar, 2.5);
 		
@@ -380,7 +478,7 @@ class ThreadedClass implements Runnable{
 	@Override
 	public void run() {
 		while(true){
-		WallFollower.mapExplored(7, WallFollower.pos);
+		WallFollower.mapExplored(7, WallFollower.posi);
 		try { Thread.sleep(500); } catch (Exception e) {}
 		}		
 	}
