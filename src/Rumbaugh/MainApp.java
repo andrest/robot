@@ -30,7 +30,8 @@ public class MainApp{
                                 }
                                 else
                                 {
-                                        Multi multiRoMulti = new Multi();
+                                        Solo soloRobot = new Solo();
+                                        soloRobot.startMapping();
                                 }
                         }
                         else if(args[i].equals("-map"))
