@@ -41,7 +41,7 @@ public class FileArrayProvider {
     	}
 
 */
-    	PathPlanner planner = new PathPlanner(mapArray);
+    	//PathPlanner planner = new PathPlanner(mapArray);
   
     	ArrayList<Point> path = planner.getPath(new Point(4,4), new Point(18,30));
 

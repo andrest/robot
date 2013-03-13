@@ -1,6 +1,13 @@
 package Rumbaugh.Robot;
 
 
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import Rumbaugh.PathPlanner;
 import Rumbaugh.RobotData;
 import Rumbaugh.WallFollower;
 
@@ -29,12 +36,15 @@ public class Solo {
         private GripperInterface gripper_0;
         private FiducialInterface fiducial_0;
         
+        private static PathPlanner pathPlanner;
+        static ArrayList<String[]> strng = new ArrayList<String[]>();
         /**
          * In this constructor for the class
          * will make a connection to the player/stage
          * client and initialise the elements of the robot
          */
         public Solo(){
+        		
                 robot = null;
                 pos2d_0 = null;
                 sonar_0 = null;
@@ -56,11 +66,13 @@ public class Solo {
         
         public void startMapping(){
                 RobotData.INSTANCE.initMap();
+                RobotData.INSTANCE.setPos2d(pos2d_0);
+                // uncomment the next 2 lines and comment out both wallfollower lines below
+                //pathPlanner = new PathPlanner(pos2d_0);
+                //pathPlanner.goToPoint(new Point(40,80));
                 WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
                 WallFollower.map();
         }
-
-
 
          
 }

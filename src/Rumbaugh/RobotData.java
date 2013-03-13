@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javaclient3.Position2DInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -21,6 +24,8 @@ public enum RobotData {
         public static final int ARRAY_HEIGHT = 120;
         public static final int RESOLUTION = 4;
         public static final int SCALE = 800;
+        static final int HEIGHT_OFFSET=15;
+        static final int LENGTH_OFFSET=22;
         
         private static int[][] mapArray;
         private static int[][] usedArray;
@@ -28,6 +33,7 @@ public enum RobotData {
         private static Timer timer;
         private static Image mapImage;
         private JPanel panel;
+		private Position2DInterface pos2d;
         
         RobotData() { }
         
@@ -48,12 +54,18 @@ public enum RobotData {
         timer.schedule( new TimerTask() {
             public void run() {
                 if (panel != null) {
-                        mapImage = toImage(mapArray).getScaledInstance(SCALE, -1, Image.SCALE_FAST);
+                        mapImage = toImage(mapArray).getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
                                 panel.repaint();
                                 panel.revalidate();
                 }
                 }
         }, 0, 750);
+        }
+        
+        public Point getLocation() {
+        	while (!pos2d.isDataReady()) {};
+            return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
+            				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
         }
         
         private int[][] getUsedMap(int[][] array){
@@ -199,5 +211,10 @@ public enum RobotData {
                 this.panel = panel;
                 return panel;
         }
+
+		public void setPos2d(Position2DInterface pos2d) {
+			this.pos2d = pos2d;
+			
+		}
     
 }

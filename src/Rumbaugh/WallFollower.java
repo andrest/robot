@@ -43,8 +43,6 @@ public class WallFollower{
     static double startY;
     static double startYaw;
     static long startTime;
-    static final int HEIGHT_OFFSET=15;
-    static final int LENGTH_OFFSET=22;
 
     static int[][] map = RobotData.INSTANCE.getMap();
     static int[][] varMap = new int[RobotData.ARRAY_HEIGHT][RobotData.ARRAY_LENGTH];
@@ -99,14 +97,12 @@ public class WallFollower{
     public static void goToUnexplored(){
     	double tYaw;
     	
-        int x = (int)Math.round(RobotData.ARRAY_HEIGHT -RobotData.RESOLUTION*(HEIGHT_OFFSET + tempPositionY));
-        int y = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+tempPositionX));
+        int x = RobotData.INSTANCE.getLocation().x;
+        int y = RobotData.INSTANCE.getLocation().x;
     	String coor = PatternCheck.getClosestUnexplored(x, y, map);
     	double tarX = Double.parseDouble(coor.split(" ")[0]);
     	double tarY = Double.parseDouble(coor.split(" ")[1]);
     	//path planning, going to unexplored
-    	map[x][y] = 2;
-    	map[(int)tarX][(int)tarY] = 2;
     	tYaw= GoStraight.getAngle(tarY,tarX,y,x);
         while (!posi.isDataReady());
         double sign= posi.getYaw()-tYaw;
@@ -217,7 +213,7 @@ public class WallFollower{
             for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
             	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
             varMap[i][j]= map[i][j];
-            if(iterator%40== 0){
+            if(iterator%80== 0){
             	if(iterator == 40){
                 	for(int i= 0;i<RobotData.ARRAY_HEIGHT; i++)
                 		for(int j= 0;j<RobotData.ARRAY_LENGTH; j++){
@@ -242,15 +238,21 @@ public class WallFollower{
             try { Thread.sleep (100); } catch (Exception e) { }
     
         }
-        int x = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET + tempPositionY));
-        int y = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+tempPositionX));
+        int x = RobotData.INSTANCE.getLocation().x;
+        int y = RobotData.INSTANCE.getLocation().y;
         if(PatternCheck.outerWallDone(varMap,x,y)){
  //       	System.out.print("Outer Wall Done");
         	PatternCheck.floodFill(0, 0, map);
         }
         else
         	System.out.print("Inner");
-
+        int[][] map = RobotData.INSTANCE.getMap();
+    	for(int i= 0;i<map.length; i++) {
+    		int[] row = map[i];
+    		for(int j= 0;j<map[i].length; j++)
+    			System.out.print(map[i][j] + " ");
+    		System.out.println();
+    	}
         posi.setSpeed(0, 0);
 
     }
@@ -358,8 +360,8 @@ public class WallFollower{
     		double yDistance = distance * Math.sin(angle);
     		
     		int ind1, ind2;
-    		ind1= (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET + (tempPositionY +yDistance)));
-    		ind2= (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + xDistance)));
+    		ind1= (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET + (tempPositionY +yDistance)));
+    		ind2= (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + xDistance)));
 
     		if (map[ind1][ind2] != 1 && validNeighbours(ind1, ind2)){
     			map[ind1][ind2] = 2;
@@ -401,10 +403,10 @@ public class WallFollower{
     		
 			var11 = (Math.sin(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
 			var22 = (Math.cos(((Math.PI)/2) - Math.abs(angle))) * tempSonar;
-			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 + var22)));
-			int indY1 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 + var11)));
-			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 - var22)));
-			int indY2 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 + var11)));
+			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY1 + var22)));
+			int indY1 = (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX1 + var11)));
+			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY1 - var22)));
+			int indY2 = (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX1 + var11)));
 			if(angle>0 && map[indX1][indY1] == 0){
 					
 					map[indX1][indY1] = 3;
@@ -419,10 +421,10 @@ public class WallFollower{
     			var11 = (Math.sin((Math.PI) - Math.abs(angle))) * tempSonar;
     			var22 = (Math.cos((Math.PI) - Math.abs(angle))) * tempSonar;
     			
-    			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 + var11)));
-    			int indY1 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 - var22)));
-    			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY1 - var11)));
-    			int indY2 = (int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX1 - var22)));
+    			int indX1 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY1 + var11)));
+    			int indY1 = (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX1 - var22)));
+    			int indX2 = (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY1 - var11)));
+    			int indY2 = (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX1 - var22)));
     				if(angle>0 && map[indX1][indY1] == 0){
     					map[indX1][indY1] = 3;
     				}
@@ -448,11 +450,11 @@ public class WallFollower{
     		var1 = (Math.sin(((Math.PI)/2) - Math.abs(tempYaw))) * tempLeftSide;
     		var2 = (Math.cos(((Math.PI)/2) - Math.abs(tempYaw))) * tempLeftSide;
     	
-    		if(tempYaw>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] != 2){
-    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var2)))] = 1;
+    		if(tempYaw>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX - var2)))] != 2){
+    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX - var2)))] = 1;
     		}
-    		if(tempYaw<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var2)))] != 2){
-    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var2)))] = 1;
+    		if(tempYaw<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + var2)))] != 2){
+    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY + var1)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + var2)))] = 1;
     		}
     	}
     
@@ -461,11 +463,11 @@ public class WallFollower{
     		var1 = (Math.sin((Math.PI) - Math.abs(tempYaw))) * tempLeftSide;
     		var2 = (Math.cos((Math.PI) - Math.abs(tempYaw))) * tempLeftSide;
     	
-    		if(tempYaw>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var1)))] != 2){
-    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX - var1)))] = 1;
+    		if(tempYaw>0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX - var1)))] != 2){
+    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX - var1)))] = 1;
     		}
-    		if(tempYaw<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] != 2){
-    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(LENGTH_OFFSET+(tempPositionX + var1)))] = 1;
+    		if(tempYaw<0 && map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + var1)))] != 2){
+    			map[(int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET+(tempPositionY - var2)))][(int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + var1)))] = 1;
     		}
     	}
        	PatternCheck.patternCorrect(map);

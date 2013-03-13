@@ -1,7 +1,13 @@
 package Rumbaugh;
 
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javaclient3.Position2DInterface;
+import javaclient3.structures.PlayerPose2d;
 
 /**
  * Class that provides an A* searching algorithm, as well as
@@ -19,88 +25,72 @@ public class PathPlanner {
 																//eases the 'contains' search
 
 	ArrayList<String> neighbours = new ArrayList<String>();		//will hold walkable neighbours of each node, via getNeighbours method
-	String[][] strArray ;										//the map
+	String[][] strArray;										//the map
 	String current;												//current node
 	String target;												//target node
 
+	Position2DInterface pos2d;
 	
-	public PathPlanner(String[][] mapStr){
+	public PathPlanner(Position2DInterface pos2d) {
+		this.pos2d = pos2d;
+		//strArray = mapStr;
 		
-		strArray = mapStr;
-		
-		for(int i=0; i < strArray.length; i++) {
-			String[] row = strArray[i];
-			for(int j=0; j < row.length; j++) {
-				System.out.print(strArray[i][j] + " ");
-			}
-			System.out.println();
-		}
-		
-		for(int i=strArray.length-1; i >= 1; i--) {
-			String[] row = strArray[i];
-			for(int j=row.length-1; j >= 1; j--) {
-				String cell = strArray[i][j];
-				if (strArray[i-1][j-1].equals("0") && strArray[i][j-1].equals("0") &&
-					strArray[i-1][j].equals("0") && strArray[i][j].equals("0")) {
-				} else {
-					strArray[i][j] = "1";
-				}
-				
-						
-				
-			}
-		} 
-		
-
-		for(int j=0; j < strArray[0].length; j++) {
-
-			int start = -1, end = -1, zeroCounter = 0;
-			for(int i=0; i < strArray.length; i++) {
-				String[] row = strArray[i];
-				if (strArray[i][j].equals("1")){
-					if(start == -1) start = i;
-					if(zeroCounter > 2) {
-						strArray[start+1][j] = "1";
-						strArray[i-1][j] = "1";
-						start = i;
-						zeroCounter = 0;
-					} else start = i;
-				} else zeroCounter++;
-
-			}
-		}
-		/*
-		for(int i=0; i < strArray.length; i++) {
-			int start = -1, end = -1, zeroCounter = 0;
-			for(int j=0; j < strArray[0].length; j++) {
-				if (strArray[i][j].equals("1")){
-					if(start == -1) start = j;
-					if(zeroCounter > 2) {
-						strArray[i][start+1] = "1";
-						strArray[i][j-1] = "1";
-						start = j;
-						zeroCounter = 0;
-					} else start = j;
-				} else zeroCounter++;
-
-			}
-		}
-		*/
-		
-		for(int i=0; i < strArray.length; i++) {
-			String[] row = strArray[i];
-			for(int j=0; j < row.length; j++) {
-				System.out.print(strArray[i][j] + " ");
-			}
-			System.out.println();
-		}
-
+		// Load the map from testfile.txt
+		try { testMap(); } catch (IOException e) { }
 	}
 	
 	public void goToPoint(Point target) {
+		while (!pos2d.isDataReady());
+		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
+		System.out.println("Going from " + startPoint + " to " + target);
+		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+    	ArrayList<Point> straight = straightLines(path);
+    	
+    	executePath(straight);
 		
+		//return when it gets to the point
+	}
+	
+	public ArrayList<Point> getPath(Point start, Point end) {
+		Asearch(start, end);
+		return reconstructPath();
+	}
+	
+	private void executePath(ArrayList<Point> nodes) {
+		for (Point node : nodes) {
+			pos2d.setPosition(new PlayerPose2d(node.x, node.y, Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
+			while(true) {
+				while (!pos2d.isDataReady()) {};
+				if ((int)Math.round(pos2d.getX()) == node.x && (int)Math.round(pos2d.getY()) == node.y) break;
+			}
+			//pos2d.setPosition(new PlayerPose2d(x, y, Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
+		}
 		
 	}
+    public static String[][] mapFromFile(String filename) throws IOException {
+        FileReader fileReader = new FileReader(filename);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        ArrayList<String[]> strng = new ArrayList<String[]>();
+        String line = "";
+        while((line = bufferedReader.readLine()) != null) {
+        		String[] lineArray = line.split(" ");
+        		strng.add(lineArray);
+        }
+        bufferedReader.close();
+        return strng.toArray(new String[0][0]);
+    }
+    public static void testMap() throws IOException{
+    	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
+    	int h = mapArray.length;
+    	int l = mapArray[0].length;
+    	int[][] arr = new int[h][l];
+    	
+    	for(int i=0;i<h;i++)
+    		for(int j=0;j<l;j++)
+    			arr[i][j] = Integer.parseInt(mapArray[i][j]);
+    	RobotData.INSTANCE.setMap(arr);
+    }
+	
 	
 	public void Asearch(Point startPoint, Point goalPoint){
 		String start = startPoint.x + " " + startPoint.y + " 0";
@@ -144,11 +134,6 @@ public class PathPlanner {
 		
 	}
 
-	public ArrayList<Point> getPath(Point start, Point end) {
-		Asearch(start, end);
-		return reconstructPath();
-	}
-	
 	/**
 	 * This method reconstructs the path, starting at
 	 * the target node, and going backwards, to corresponding
@@ -209,20 +194,28 @@ public class PathPlanner {
 		int i = Integer.parseInt(str.split(" ")[0]);
 		int j = Integer.parseInt(str.split(" ")[1]);
 		int k = Integer.parseInt(str.split(" ")[2]);
-		for(int alfa = i-1; alfa<= i+1; alfa++)
-			for(int beta = j-1; beta<=j+1;beta++){
-				if(!strArray[alfa][beta].equalsIgnoreCase("1") &&(alfa != i || beta != j)){
+        for(int alfa = i-1; alfa<= i+1; alfa++)
+            for(int beta = j-1; beta<=j+1;beta++){
+				if(RobotData.INSTANCE.getMap()[alfa][beta] != 1 &&(alfa != i || beta != j)){
 					if((alfa+beta)%2 != (i+j)%2){
 						neighbors.add(alfa + " " + beta+ " " + (10+k + getH(alfa+" " + beta, tar)));
 					}
 					else{
-						if((alfa == i-1) && (beta == j-1) && !strArray[i-1][j].equalsIgnoreCase("1") && !strArray[i][j-1].equalsIgnoreCase("1"))
+						if((alfa == i-1) && (beta == j-1) && 
+							RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
+							RobotData.INSTANCE.getMap()[i][j-1] != 1)
 							neighbors.add(alfa + " " + beta + " " + (14+k) + getH(alfa+" " + beta, tar));
-						else if((alfa == i-1) && (beta == j+1) && !strArray[i-1][j].equalsIgnoreCase("1") && !strArray[i][j+1].equalsIgnoreCase("1"))
+						else if((alfa == i-1) && (beta == j+1) && 
+								RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
+								RobotData.INSTANCE.getMap()[i][j+1] != 1)
 								neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
-							else if((alfa == i+1) && (beta == j-1) && !strArray[i][j-1].equalsIgnoreCase("1") && !strArray[i+1][j].equalsIgnoreCase("1"))
+							else if((alfa == i+1) && (beta == j-1) && 
+									RobotData.INSTANCE.getMap()[i][j-1] != 1 && 
+									RobotData.INSTANCE.getMap()[i+1][j] != 1)
 									neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
-								else if((alfa == i+1) && (beta == j+1) && !strArray[i+1][j].equalsIgnoreCase("1") && !strArray[i][j+1].equalsIgnoreCase("1"))
+								else if((alfa == i+1) && (beta == j+1) && 
+										RobotData.INSTANCE.getMap()[i+1][j] != 1 && 
+										RobotData.INSTANCE.getMap()[i][j+1] != 1)
 										neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 					}
 				}
@@ -243,15 +236,15 @@ public class PathPlanner {
 	 * @return	Integer value, representing the heuristic for a node
 	 */
 	
-	public int getH(String cur, String tar){
-		int xCur = Integer.parseInt(cur.split(" ")[0]);
-		int yCur = Integer.parseInt(cur.split(" ")[1]);
-		int xTar = Integer.parseInt(tar.split(" ")[0]);
-		int yTar = Integer.parseInt(tar.split(" ")[1]);
-		
-		return (int) (10 *Math.sqrt(((xCur - xTar)* (xCur - xTar)) + ((yCur - yTar)* (yCur - yTar))));
-	}
-	
+    public int getH(String cur, String tar){
+        int xCur = Integer.parseInt(cur.split(" ")[0]);
+        int yCur = Integer.parseInt(cur.split(" ")[1]);
+        int xTar = Integer.parseInt(tar.split(" ")[0]);
+        int yTar = Integer.parseInt(tar.split(" ")[1]);
+        
+        return (int) (10 *Math.sqrt(((xCur - xTar)* (xCur - xTar)) + ((yCur - yTar)* (yCur - yTar))));
+}
+
 	
 	/**
 	 * Processes a string, to retrieve only the
