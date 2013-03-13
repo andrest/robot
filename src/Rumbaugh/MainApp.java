@@ -5,63 +5,51 @@ import Rumbaugh.Robot.Solo;
 import Rumbaugh.View.RobotUserInterface;
 
 /**
- * This is the main starting point of the application
- * where the user will enter commands on the terminal and 
- * they will be processed here
+ * This is the main starting point of the application where the user will enter
+ * commands on the terminal and they will be processed here
  * 
  */
-public class MainApp{
-        private static String robotMode;
-        public static void main(String [] args){
+public class MainApp {
+	private static String robotMode;
+	private static Solo soloRobot;
+	public static void main(String [] args){
         	
-                for(int i = 0; i < args.length; i++)
-                {
-                        if(args[i].equals("-explore"))
-                        {
-                                //this is where the explore code goes
-                                System.out.println("The explore area is chosen");
-                                if(robotMode == null)
-                                {
-                                        System.out.println("Choose a robot mode, either -solo or -multi");
-                                }
-                                else if(robotMode.equals("Solo"))
-                                {
-                                        Solo soloRobot = new Solo();
-                                        soloRobot.startMapping();
-                                }
-                                else
-                                {
-                                        Solo soloRobot = new Solo();
-                                        soloRobot.startMapping();
-                                }
-                        }
-                        else if(args[i].equals("-map"))
-                        {
-                                String fileName = args[i + 1];
-                                System.out.println("The name of the file is: "+fileName);
-                        }
-                        else if(args[i].equals("-collect"))
-                        {
-                                double x1 = Double.parseDouble(args[i + 1]);
-                                double y1 = Double.parseDouble(args[i + 2]);
-                                double x2 = Double.parseDouble(args[i + 3]);
-                                double y2 = Double.parseDouble(args[i + 4]);
-                                System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
-                        }
-                        else if(args[i].equals("-solo"))
-                        {
-                                System.out.println("The solo mode is chosen");
-                                robotMode = "Solo";
-                        }
-                        else if(args[i].equals("-multi"))
-                        {
-                                //this is where the multi code will go
-                                robotMode = "Multi";
-                        }
-                        else if(args[i].equals("-gui"))
-                        {
-                                new RobotUserInterface().setVisible(true);
-                        }
-                }
+        if(args.length > 0){
+        		
+        	boolean test = true;
+           	int i = 0;
+            	
+           	while(i<args.length && test){
+            		
+           		if(args[i].equals("-gui"))
+           			new RobotUserInterface().setVisible(true);
+            		
+           		else if(args[i].equals("-solo"))
+           			soloRobot = new Solo();
+           		
+           		
+            	else if(args[i].equals("-multi"))
+            		test = false;  
+            	i++;
+            }
+            	
+            if(test){
+            		
+            	for(int j = 0; j<args.length; j++){
+            			
+            		if(args[j].equals("-explore"))
+            			//this is where the explore code goes
+                           soloRobot.startMapping();
+            			
+            		else if(args[j].equals("-collect")){
+            			 double x1 = Double.parseDouble(args[i + 1]);
+                         double y1 = Double.parseDouble(args[i + 2]);
+                         double x2 = Double.parseDouble(args[i + 3]);
+                         double y2 = Double.parseDouble(args[i + 4]);
+                         System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
+            		}
+            	}
+            }
         }
+    }
 }
