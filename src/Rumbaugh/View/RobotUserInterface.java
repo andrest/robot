@@ -162,6 +162,7 @@ public class RobotUserInterface extends JFrame {
 							soloRobot.startMapping();
 						}
 					});
+					exploreThread.start();
 				}
 			}
 		});
