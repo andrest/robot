@@ -24,6 +24,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import Rumbaugh.RobotData;
+import Rumbaugh.Robot.Solo;
 
 /**
  * This is the class for the user
@@ -153,7 +154,14 @@ public class RobotUserInterface extends JFrame {
 				}
 				else
 				{
-					System.out.println(message+findModeSelection());
+					Thread exploreThread = new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							Solo soloRobot = new Solo();
+							soloRobot.startMapping();
+						}
+					});
 				}
 			}
 		});
