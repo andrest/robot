@@ -1,6 +1,5 @@
 package Rumbaugh;
 
-import Rumbaugh.Robot.Multi;
 import Rumbaugh.Robot.Solo;
 import Rumbaugh.View.RobotUserInterface;
 

@@ -34,6 +34,7 @@ public enum RobotData {
         private static Image mapImage;
         private JPanel panel;
 		private Position2DInterface pos2d;
+		private static BufferedImage bufferedImage;
         
         RobotData() { }
         
@@ -158,9 +159,8 @@ public enum RobotData {
     private static BufferedImage toImage(int[][] map){
         int height = map.length;
         int width = map[0].length;
+        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
         for(int y=0; y< height; y++){
             for(int x=0; x< width; x++){
                 
@@ -193,6 +193,7 @@ public enum RobotData {
 
         public Image getMapImage() { return mapImage; };
         public int[][] getMap() { return mapArray; }
+        public BufferedImage getBufferedImage(){return bufferedImage;}
     public void setMap(int[][] map) { mapArray = map; }
 
         public JPanel getImagePanel() {
@@ -219,5 +220,4 @@ public enum RobotData {
 			this.pos2d = pos2d;
 			
 		}
-    
 }

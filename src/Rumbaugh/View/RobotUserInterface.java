@@ -3,18 +3,16 @@ package Rumbaugh.View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,9 +32,7 @@ import Rumbaugh.Robot.Solo;
  *
  */
 @SuppressWarnings("serial")
-public class RobotUserInterface extends JFrame {
-	private JLabel mapLabel;
-	
+public class RobotUserInterface extends JFrame {	
 	private JButton exploreButton;
 	private JButton mapButton;
 	private JButton collectButton;
@@ -70,9 +66,7 @@ public class RobotUserInterface extends JFrame {
 	 * This is a method that will initialise the widgets
 	 * that will be added to the GUI
 	 */
-	private void initWidgets(){
-		mapLabel = new JLabel("This is where the map will go");
-		
+	private void initWidgets(){		
 		exploreButton = new JButton("Explore");
 		mapButton = new JButton("Map");
 		collectButton = new JButton("Collect");
@@ -147,7 +141,6 @@ public class RobotUserInterface extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String message = "The operation button was pressed with mode of operation: ";
 				if(soloRadioButton.isSelected() == false && multiRadioButton.isSelected() == false)
 				{
 					JOptionPane.showMessageDialog(null, "Choose a mode of Operation", "Robot Operation Mode", JOptionPane.WARNING_MESSAGE);
@@ -174,7 +167,17 @@ public class RobotUserInterface extends JFrame {
 				String fileName = (String)JOptionPane.showInputDialog(null, "Enter the file name for the Map", "File Name", JOptionPane.INFORMATION_MESSAGE);
 				if((fileName != null) && (fileName.length() > 0))
 				{
-					System.out.println("The name of the file will be: "+fileName);
+					BufferedImage image = RobotData.INSTANCE.getBufferedImage();
+					try {
+						if(image == null)
+						{
+							throw new IOException("There is no image to display");
+						}
+						RobotData.exportImageToFile(fileName, image);
+						System.out.println("Finished");
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
 				}
 			}
 		});
