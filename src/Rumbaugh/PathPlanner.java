@@ -12,7 +12,8 @@ import javaclient3.structures.PlayerPose2d;
 /**
  * Class that provides an A* searching algorithm, as well as
  * methods to return the walkable neighbours of a specific node
- * and calculate heuristics.
+ * and calculate heuristics. It also provides a method that makes
+ * the robot to actually follow that path.
  * @author Ionut
  *
  */
@@ -28,6 +29,10 @@ public class PathPlanner {
 	String[][] strArray;										//the map
 	String current;												//current node
 	String target;												//target node
+    static final int HEIGHT_OFFSET=15;
+    static final int LENGTH_OFFSET=22;
+    public static final int ARRAY_HEIGHT = 120;
+    public static final int RESOLUTION = 4;
 
 	Position2DInterface pos2d;
 	
@@ -45,7 +50,9 @@ public class PathPlanner {
 		System.out.println("Going from " + startPoint + " to " + target);
 		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
     	ArrayList<Point> straight = straightLines(path);
-    	
+    	for(int i=0;i<straight.size();i++){
+    		System.out.println(straight.get(i));
+    	}
     	executePath(straight);
 		
 		//return when it gets to the point
@@ -57,16 +64,39 @@ public class PathPlanner {
 	}
 	
 	private void executePath(ArrayList<Point> nodes) {
-		for (Point node : nodes) {
-			pos2d.setPosition(new PlayerPose2d(node.x, node.y, Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
+	/**	for (Point node : nodes) {
+			pos2d.setPosition(new PlayerPose2d(transformX(node.x), transformY(node.y), Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
 			while(true) {
 				while (!pos2d.isDataReady()) {};
-				if ((int)Math.round(pos2d.getX()) == node.x && (int)Math.round(pos2d.getY()) == node.y) break;
+				if (getLocation().equals(node)) break;
 			}
 			//pos2d.setPosition(new PlayerPose2d(x, y, Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
 		}
+	*/
+		int i=0;
+		while(i<nodes.size()-1){
+			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i+1).y), transformY(nodes.get(i+1).x), Math.PI/2);
+			pos2d.setPosition( pp2d, new PlayerPose2d(1, 1, 1), 0);
+			System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
+			boolean b= true;
+			System.out.println(i);
+			while(b){
+				while(!pos2d.isDataReady());
+				if(inRange(pp2d.getPx(),pos2d.getX()) && inRange(pp2d.getPy(),pos2d.getY()))
+					b= false;
+			}
+			i++;
+			}
+		System.out.println("Done");
+			
+		}
 		
-	}
+	
+    public Point getLocation() {
+    	while (!pos2d.isDataReady()) {};
+        return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
+        				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
+    }
     public static String[][] mapFromFile(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -91,9 +121,16 @@ public class PathPlanner {
     	RobotData.INSTANCE.setMap(arr);
     }
 	
+    private double transformX (int X){
+    	return ((X/ RESOLUTION) -LENGTH_OFFSET) + 0.35;
+    }
+    private double transformY (int Y){
+    	return ((ARRAY_HEIGHT - Y)/RESOLUTION) - HEIGHT_OFFSET + 0.35;
+    }
 	
 	public void Asearch(Point startPoint, Point goalPoint){
-		String start = startPoint.x + " " + startPoint.y + " 0";
+		String start = startPoint.x + " " + startPoint.y + " " +
+				"0";
 		String goal = goalPoint.x + " " + goalPoint.y;
 				
 		target = goal;
@@ -204,7 +241,7 @@ public class PathPlanner {
 						if((alfa == i-1) && (beta == j-1) && 
 							RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
 							RobotData.INSTANCE.getMap()[i][j-1] != 1)
-							neighbors.add(alfa + " " + beta + " " + (14+k) + getH(alfa+" " + beta, tar));
+							neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 						else if((alfa == i-1) && (beta == j+1) && 
 								RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
 								RobotData.INSTANCE.getMap()[i][j+1] != 1)
@@ -289,6 +326,10 @@ public class PathPlanner {
 		else
 			return 7;
 	}
-	
+	public static boolean inRange(double a, double b){
+		if((a<b+0.03)&&(a>b-0.03))
+			return true;
+		else return false;
+	}
 	
 }

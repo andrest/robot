@@ -41,16 +41,16 @@ public class FileArrayProvider {
     	}
 
 */
-    	//PathPlanner planner = new PathPlanner(mapArray);
+//    	PathPlanner planner = new PathPlanner(mapArray);
   
-    	ArrayList<Point> path = planner.getPath(new Point(4,4), new Point(18,30));
+//    	ArrayList<Point> path = planner.getPath(new Point(4,4), new Point(18,30));
 
-    	for(int i=0;i<path.size();i++)
-    		System.out.println(path.get(i).x + " " + path.get(i).y);
-    	System.out.println("+++++++++++++++++++++++++++++++++++++");
-    	ArrayList<Point> straight = planner.straightLines(path);
-    	for(int i=0;i<straight.size();i++)
-    		System.out.println(straight.get(i).x + " " + straight.get(i).y);
+  //  	for(int i=0;i<path.size();i++)
+  //  		System.out.println(path.get(i).x + " " + path.get(i).y);
+  //  	System.out.println("+++++++++++++++++++++++++++++++++++++");
+  //  	ArrayList<Point> straight = planner.straightLines(path);
+  //  	for(int i=0;i<straight.size();i++)
+  //  		System.out.println(straight.get(i).x + " " + straight.get(i).y);
     	
       	
     	

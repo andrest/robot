@@ -178,6 +178,9 @@ public enum RobotData {
                         case 3:
                                 color = Color.GRAY.getRGB();
                                 break;
+                        case 4:
+                        		color = Color.YELLOW.getRGB();
+                        		break;
                         default:
                                 color = Color.DARK_GRAY.getRGB();
                                 break;
