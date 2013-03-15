@@ -68,10 +68,10 @@ public class Solo {
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 // uncomment the next 2 lines and comment out both wallfollower lines below
-                //pathPlanner = new PathPlanner(pos2d_0);
-                //pathPlanner.goToPoint(new Point(40,80));
-                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                WallFollower.map();
+                pathPlanner = new PathPlanner(pos2d_0);
+                pathPlanner.goToPoint(new Point(35,90));
+                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                //WallFollower.map();
         }
 
          

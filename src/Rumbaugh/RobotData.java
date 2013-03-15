@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +30,7 @@ public enum RobotData {
         
         private static int[][] mapArray;
         private static int[][] usedArray;
+        private static ArrayList<Point> garbage;
         
         private static Timer timer;
         private static Image mapImage;
@@ -41,11 +43,12 @@ public enum RobotData {
         // Initalise the map with zeroes
         public void initMap() {
                 mapArray = new int[ARRAY_HEIGHT][ARRAY_LENGTH]; 
+                garbage = new ArrayList<Point>();
                 timer = new Timer();
                 
-        resetArray(mapArray);
+                resetArray(mapArray);
 
-        startUpdatingImage();
+                startUpdatingImage();
 
         }
         
@@ -191,33 +194,47 @@ public enum RobotData {
         return bufferedImage;  
     }
 
+<<<<<<< HEAD
         public Image getMapImage() { return mapImage; };
         public int[][] getMap() { return mapArray; }
         public BufferedImage getBufferedImage(){return bufferedImage;}
+=======
+    public Image getMapImage() { return mapImage; };
+    public int[][] getMap() { return mapArray; }
+>>>>>>> GarbageCollector structure
     public void setMap(int[][] map) { mapArray = map; }
 
-        public JPanel getImagePanel() {
-                JPanel panel = new JPanel() {
-                        private static final long serialVersionUID = 1L;
+    public JPanel getImagePanel() {
+    	JPanel panel = new JPanel() {
+    		private static final long serialVersionUID = 1L;
 
-                        @Override
-                    public void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        if (mapImage == null) return;
-                        g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
-                    }
-                        @Override  
-                        public Dimension getPreferredSize(){
-                                if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
-                                return new Dimension(mapImage.getWidth(null), mapImage.getHeight(null));  
-                        }  
-                };
-                this.panel = panel;
-                return panel;
-        }
+            @Override
+            public void paintComponent(Graphics g) {
+            	super.paintComponent(g);
+                if (mapImage == null) return;
+                g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
+            }
+            @Override  
+            public Dimension getPreferredSize(){
+            	if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
+                return new Dimension(mapImage.getWidth(null), mapImage.getHeight(null));  
+            }  
+        };
+        this.panel = panel;
+        return panel;
+    }
 
-		public void setPos2d(Position2DInterface pos2d) {
-			this.pos2d = pos2d;
+	public void setPos2d(Position2DInterface pos2d) {
+		this.pos2d = pos2d;
 			
+<<<<<<< HEAD
 		}
+=======
+	}
+
+	public ArrayList<Point> getGarbage() {
+		return garbage;
+	}
+    
+>>>>>>> GarbageCollector structure
 }

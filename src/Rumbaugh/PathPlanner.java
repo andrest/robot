@@ -331,5 +331,10 @@ public class PathPlanner {
 			return true;
 		else return false;
 	}
+
+	public void goToPenultimate(Point garbage) {
+		// go to the second to last node
+		goToPoint(garbage);
+	}
 	
 }
