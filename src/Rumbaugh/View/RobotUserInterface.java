@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,20 +167,13 @@ public class RobotUserInterface extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String fileName = (String)JOptionPane.showInputDialog(null, "Enter the file name for the Map", "File Name", JOptionPane.INFORMATION_MESSAGE);
-				if((fileName != null) && (fileName.length() > 0))
-				{
-					BufferedImage image = RobotData.INSTANCE.getBufferedImage();
-					try {
-						if(image == null)
-						{
-							throw new IOException("There is no image to display");
-						}
-						RobotData.exportImageToFile(fileName, image);
-						System.out.println("Finished");
-					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(null, e1.getMessage());
-					}
+				DateFormat dateFormat = new SimpleDateFormat("HH.mm.ss");
+				Date date = new Date();
+				BufferedImage image = RobotData.INSTANCE.getScaledBufferedImage();
+				try {
+					RobotData.exportImageToFile("map-"+dateFormat.format(date), image);
+				} catch (IOException e1) {	
+					JOptionPane.showMessageDialog(null, e1.getMessage());
 				}
 			}
 		});

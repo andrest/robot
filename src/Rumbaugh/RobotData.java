@@ -3,6 +3,7 @@ package Rumbaugh;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import java.util.TimerTask;
 import javaclient3.Position2DInterface;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 public enum RobotData {
@@ -40,16 +42,15 @@ public enum RobotData {
         
         RobotData() { }
         
-        // Initalise the map with zeroes
+        /**
+         * Initialise the map with zeroes
+         */
         public void initMap() {
                 mapArray = new int[ARRAY_HEIGHT][ARRAY_LENGTH]; 
                 garbage = new ArrayList<Point>();
-                timer = new Timer();
-                
+                timer = new Timer();            
                 resetArray(mapArray);
-
                 startUpdatingImage();
-
         }
         
         private void startUpdatingImage() {
@@ -59,13 +60,16 @@ public enum RobotData {
             public void run() {
                 if (panel != null) {
                         mapImage = toImage(mapArray).getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
-                                panel.repaint();
-                                panel.revalidate();
+                        panel.repaint();
+                        panel.revalidate();
                 }
                 }
         }, 0, 750);
         }
-        
+        /**
+         * @return Point representing the robot's co-ordinate location
+         * on the real map
+         */
         public Point getLocation() {
         	while (!pos2d.isDataReady()) {};
             return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
@@ -147,9 +151,17 @@ public enum RobotData {
      * @throws IOException If problems occur during writing of file
      */
     public static void exportImageToFile(String fileName, RenderedImage image)throws IOException{
-        File file = new File(fileName);
-        //to export to png, change 2 parameter to "png"
-        ImageIO.write(image, "jpg", file);
+        File saveFile = new File(fileName +".jpg");
+        JFileChooser chooser = new JFileChooser();
+        chooser.setSelectedFile(saveFile);
+        int rval = chooser.showSaveDialog(null);
+        if (rval == JFileChooser.APPROVE_OPTION) {
+            saveFile = chooser.getSelectedFile();
+            try {
+            	ImageIO.write(image, "jpg", saveFile);
+            } catch (IOException ex) {
+            }
+        }
     }
     
     /**
@@ -194,11 +206,28 @@ public enum RobotData {
         return bufferedImage;  
     }
 
-    public BufferedImage getBufferedImage(){return bufferedImage;}
+    /**
+     * Returns a scaled version of the map
+     * 
+     * @return BufferedImage scaled as it appears in the GUI
+     */
+    public BufferedImage getScaledBufferedImage(){
+    	Image bigMap = bufferedImage.getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
+    	BufferedImage bufferedBigMap = new BufferedImage(bigMap.getWidth(null),
+    	                                                 bigMap.getHeight(null),
+    	                                                 BufferedImage.TYPE_INT_RGB);
+    	bufferedBigMap.getGraphics().drawImage(bigMap, 0, 0, null);
+    	return bufferedBigMap;
+    }
     public Image getMapImage() { return mapImage; };
     public int[][] getMap() { return mapArray; }
     public void setMap(int[][] map) { mapArray = map; }
 
+    /**
+     * Returns the JPanel with the map image
+	 *
+     * @return JPanel where the map image will be drawn
+     */
     public JPanel getImagePanel() {
     	JPanel panel = new JPanel() {
     		private static final long serialVersionUID = 1L;
