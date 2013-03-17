@@ -194,9 +194,14 @@ public enum RobotData {
         return bufferedImage;  
     }
 
-    public BufferedImage getBufferedImage(){return bufferedImage;}
+<<<<<<< HEAD
+        public Image getMapImage() { return mapImage; };
+        public int[][] getMap() { return mapArray; }
+        public BufferedImage getBufferedImage(){return bufferedImage;}
+=======
     public Image getMapImage() { return mapImage; };
     public int[][] getMap() { return mapArray; }
+>>>>>>> GarbageCollector structure
     public void setMap(int[][] map) { mapArray = map; }
 
     public JPanel getImagePanel() {
@@ -220,10 +225,16 @@ public enum RobotData {
     }
 
 	public void setPos2d(Position2DInterface pos2d) {
-		this.pos2d = pos2d;	
+		this.pos2d = pos2d;
+			
+<<<<<<< HEAD
+		}
+=======
 	}
 
 	public ArrayList<Point> getGarbage() {
 		return garbage;
 	}
+    
+>>>>>>> GarbageCollector structure
 }
