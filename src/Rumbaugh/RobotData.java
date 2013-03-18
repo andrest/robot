@@ -39,6 +39,7 @@ public enum RobotData {
         private JPanel panel;
 		private Position2DInterface pos2d;
 		private static BufferedImage bufferedImage;
+		private static String state;
         
         RobotData() { }
         
@@ -76,59 +77,62 @@ public enum RobotData {
             				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
         }
         
-        private int[][] getUsedMap(int[][] array){
-        	int x1 = 0; 
-        	int	x2 = ARRAY_HEIGHT-1; 
-        	int y1=0; 
-        	int y2 = ARRAY_LENGTH-1;
-        	boolean b = true;
-        	while(b){
-        			for(int j = 0;j<ARRAY_LENGTH/2.5;j++)
-        				if(array[x1][j] != 0)
-        					b = false;
-        			if(b && x1 < ARRAY_HEIGHT-1)
-        				x1 ++;
-        			b=false;
-        		
-        	}
-        	b=true;
-        	while (b){
-        		
-        			for(int j = 0; j< ARRAY_LENGTH/2.5;j++)
-        				if(array[x2][j]!= 0)
-        					b= false;
-        			if(b)
-        				x2 -- ;
-        			b=false;
-        		
-        	}
-        	b=true;
-        	while (b){
-        			for(int i=0;i<ARRAY_HEIGHT/2.5;i++)
-        				if(array[i][y1] != 0)
-        					b= false;
-        			if(b)
-        				y1 ++ ;
-        			b=false;
-        		
-        	}
-        	b= true;
-        	while(b){
-        			for(int i=0;i<ARRAY_HEIGHT/2.5;i++)
-        				if(array[i][y2] != 0)
-        					b=false;
-        			if(b)
-        				y2--;
-        			b= false;
-        		
-        	}
-        	int[][] newArray = new int[x2 - x1 + 1][y2 -y1 + 1];
-        	for(int i= 0; i<x2-x1+1; i++)
-        		for(int j=0;j<y2-y1+1;j++)
-        			newArray[i][j] = array[x1 + i][y1 + j];
-        	return newArray;
+        private int[][] trimMap(int[][] map) {
+        	int startRow = 0, startColumn = 0;
+        	int endRow = 0, endColumn = 0;
+
+		    // Bottom horizontal
+        	outer:
+		    for(int i=map.length-1; i >= 0; i--) {
+	            for(int j=map[0].length-1; j >= 0; j--) {
+	            	if (map[i][j] == 1){
+	            		endRow = i+1;
+	            		break outer;
+	            	}
+	            }
+		    }
+		    // Right Side vertical
+        	outer:
+        	for(int j=map[0].length-1; j >= 0; j--) {
+        		for(int i=map.length-1; i >= 0; i--) {
+	            	if (map[i][j] == 1){
+	            		endColumn = j+1;
+	            		break outer;
+	            	}
+	            }
+		    }
+		    
+		    // Top horizontal
+		    outer:
+		    for(int i=0; i < map.length; i++) {
+	            for(int j=0; j < map[0].length; j++) {
+	            	if (map[i][j] == 1){
+	            		startRow = i;
+	            		break outer;
+	            	}
+	            }
+		    }
+		    // Left side horizontal
+		    outer:
+		    for(int j=0; j < map[0].length; j++) {
+		    	for(int i=0; i < map.length; i++) {
+	            	if (map[i][j] == 1){
+	            		startColumn = j;
+	            		break outer;
+	            	}
+		        }
+		    }
+
+		    // Create the new trimmed array
+		    int[][] trimmedMap = new int[endRow-startRow][endColumn-startColumn];
+		    for(int i=0; i < endRow-startRow; i++) {
+		    	for(int j= 0; j < endColumn-startColumn; j++){    		
+		    		trimmedMap[i][j] = map[startRow+i][startColumn+j];
+		    	}
+		    }
+		    return trimmedMap;
         }
-        
+
         public void stopUpdatingImage() {
                 timer.cancel();
                 timer.purge();
@@ -212,7 +216,7 @@ public enum RobotData {
      * @return BufferedImage scaled as it appears in the GUI
      */
     public BufferedImage getScaledBufferedImage(){
-    	Image bigMap = bufferedImage.getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
+    	Image bigMap = toImage(trimMap(mapArray)).getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
     	BufferedImage bufferedBigMap = new BufferedImage(bigMap.getWidth(null),
     	                                                 bigMap.getHeight(null),
     	                                                 BufferedImage.TYPE_INT_RGB);
@@ -222,7 +226,8 @@ public enum RobotData {
     public Image getMapImage() { return mapImage; };
     public int[][] getMap() { return mapArray; }
     public void setMap(int[][] map) { mapArray = map; }
-
+    public void setState(String state) { this.state = state; }
+    public String getState() { return state; }
     /**
      * Returns the JPanel with the map image
 	 *
