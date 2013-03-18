@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javaclient3.Position2DInterface;
+import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerPose2d;
 
 /**
@@ -26,19 +27,18 @@ public class PathPlanner {
 																//eases the 'contains' search
 
 	ArrayList<String> neighbours = new ArrayList<String>();		//will hold walkable neighbours of each node, via getNeighbours method
-	String[][] strArray;										//the map
+	int[][] mapArray;										//the map
 	String current;												//current node
 	String target;												//target node
-    static final int HEIGHT_OFFSET=15;
-    static final int LENGTH_OFFSET=22;
-    public static final int ARRAY_HEIGHT = 120;
-    public static final int RESOLUTION = 4;
+	static int[][] array = null;
 
 	Position2DInterface pos2d;
+	RangerInterface rngi;
 	
-	public PathPlanner(Position2DInterface pos2d) {
+	public PathPlanner(Position2DInterface pos2d , RangerInterface rngi, int[][] mapStr) {
 		this.pos2d = pos2d;
-		//strArray = mapStr;
+		this.rngi = rngi;
+	//	RobotData.INSTANCE.setMap(mapStr);
 		
 		// Load the map from testfile.txt
 		try { testMap(); } catch (IOException e) { }
@@ -64,29 +64,33 @@ public class PathPlanner {
 	}
 	
 	private void executePath(ArrayList<Point> nodes) {
-	/**	for (Point node : nodes) {
-			pos2d.setPosition(new PlayerPose2d(transformX(node.x), transformY(node.y), Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
-			while(true) {
-				while (!pos2d.isDataReady()) {};
-				if (getLocation().equals(node)) break;
-			}
-			//pos2d.setPosition(new PlayerPose2d(x, y, Math.PI/2), new PlayerPose2d(0, 0, 0), 0);
-		}
-	*/
 		int i=0;
-		while(i<nodes.size()-1){
-			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i+1).y), transformY(nodes.get(i+1).x), Math.PI/2);
+		for(int j=0;j<nodes.size();j++)
+			WallFollower.map[nodes.get(j).x][nodes.get(j).y] =4;
+		while(i<nodes.size()){
+			
+			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), Math.PI/2);
 			pos2d.setPosition( pp2d, new PlayerPose2d(1, 1, 1), 0);
 			System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
 			boolean b= true;
 			System.out.println(i);
 			while(b){
+				while(!rngi.isDataReady());
+				double[] sonars = rngi.getData().getRanges();
+				double min = sonars[0];
+				if(min<sonars[1])
+					min = sonars[1];
+				if(min<sonars[2])
+					min = sonars[2];
 				while(!pos2d.isDataReady());
-				if(inRange(pp2d.getPx(),pos2d.getX()) && inRange(pp2d.getPy(),pos2d.getY()))
+				if(inRange(pp2d.getPx(),pos2d.getX(), 0.5) && inRange(pp2d.getPy(),pos2d.getY(),0.5) || min < 0.3){
 					b= false;
+	
+				}
 			}
 			i++;
-			}
+			
+		}
 		System.out.println("Done");
 			
 		}
@@ -94,8 +98,8 @@ public class PathPlanner {
 	
     public Point getLocation() {
     	while (!pos2d.isDataReady()) {};
-        return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
-        				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
+        return new Point((int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET + pos2d.getY())),
+        				 (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+pos2d.getX())));
     }
     public static String[][] mapFromFile(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
@@ -110,22 +114,23 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-    	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
+ /**   	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
     	int h = mapArray.length;
     	int l = mapArray[0].length;
     	int[][] arr = new int[h][l];
-    	
+    	array = arr;
     	for(int i=0;i<h;i++)
     		for(int j=0;j<l;j++)
     			arr[i][j] = Integer.parseInt(mapArray[i][j]);
-    	RobotData.INSTANCE.setMap(arr);
+*/ 
+    	RobotData.INSTANCE.setMap(WallFollower.map);
     }
 	
     private double transformX (int X){
-    	return ((X/ RESOLUTION) -LENGTH_OFFSET) + 0.35;
+    	return ((X/ RobotData.RESOLUTION) -RobotData.LENGTH_OFFSET);
     }
     private double transformY (int Y){
-    	return ((ARRAY_HEIGHT - Y)/RESOLUTION) - HEIGHT_OFFSET + 0.35;
+    	return ((RobotData.ARRAY_HEIGHT - Y)/RobotData.RESOLUTION) - RobotData.HEIGHT_OFFSET;
     }
 	
 	public void Asearch(Point startPoint, Point goalPoint){
@@ -233,26 +238,26 @@ public class PathPlanner {
 		int k = Integer.parseInt(str.split(" ")[2]);
         for(int alfa = i-1; alfa<= i+1; alfa++)
             for(int beta = j-1; beta<=j+1;beta++){
-				if(RobotData.INSTANCE.getMap()[alfa][beta] != 1 &&(alfa != i || beta != j)){
+				if(WallFollower.map[alfa][beta] == 3 &&(alfa != i || beta != j)){
 					if((alfa+beta)%2 != (i+j)%2){
 						neighbors.add(alfa + " " + beta+ " " + (10+k + getH(alfa+" " + beta, tar)));
 					}
 					else{
 						if((alfa == i-1) && (beta == j-1) && 
-							RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
-							RobotData.INSTANCE.getMap()[i][j-1] != 1)
+							WallFollower.map[i-1][j] == 3 && 
+							WallFollower.map[i][j-1] == 3)
 							neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 						else if((alfa == i-1) && (beta == j+1) && 
-								RobotData.INSTANCE.getMap()[i-1][j] != 1 && 
-								RobotData.INSTANCE.getMap()[i][j+1] != 1)
+								WallFollower.map[i-1][j] == 3 && 
+								WallFollower.map[i][j+1] == 3)
 								neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 							else if((alfa == i+1) && (beta == j-1) && 
-									RobotData.INSTANCE.getMap()[i][j-1] != 1 && 
-									RobotData.INSTANCE.getMap()[i+1][j] != 1)
+									WallFollower.map[i][j-1] == 3 && 
+									WallFollower.map[i+1][j] == 3)
 									neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 								else if((alfa == i+1) && (beta == j+1) && 
-										RobotData.INSTANCE.getMap()[i+1][j] != 1 && 
-										RobotData.INSTANCE.getMap()[i][j+1] != 1)
+										WallFollower.map[i+1][j] == 3 && 
+										WallFollower.map[i][j+1] == 3)
 										neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 					}
 				}
@@ -297,12 +302,14 @@ public class PathPlanner {
 	public ArrayList<Point> straightLines(ArrayList<Point> array){
 		ArrayList<Point> sLines = new ArrayList<Point>();
 		sLines.add(array.get(0));
+		if(array.size()>1){
 		int prevDir = getDirection(array.get(0), array.get(1));
 		for(int i= 2;i<array.size();i++){
 			if(prevDir != getDirection(array.get(i-1), array.get(i))){
 				sLines.add(array.get(i-1));
 				prevDir = getDirection(array.get(i-1), array.get(i));
 			}
+		}
 		}
 		sLines.add(array.get(array.size()-1));
 		
@@ -326,15 +333,10 @@ public class PathPlanner {
 		else
 			return 7;
 	}
-	public static boolean inRange(double a, double b){
-		if((a<b+0.03)&&(a>b-0.03))
+	public static boolean inRange(double a, double b, double c){
+		if((a<b+c)&&(a>b-c))
 			return true;
 		else return false;
-	}
-
-	public void goToPenultimate(Point garbage) {
-		// go to the second to last node
-		goToPoint(garbage);
 	}
 	
 }
