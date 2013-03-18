@@ -27,7 +27,7 @@ public class PathPlanner {
 																//eases the 'contains' search
 
 	ArrayList<String> neighbours = new ArrayList<String>();		//will hold walkable neighbours of each node, via getNeighbours method
-	int[][] mapArray;										//the map
+	static int[][] mapArray;										//the map
 	String current;												//current node
 	String target;												//target node
 	static int[][] array = null;
@@ -38,16 +38,16 @@ public class PathPlanner {
 	public PathPlanner(Position2DInterface pos2d , RangerInterface rngi, int[][] mapStr) {
 		this.pos2d = pos2d;
 		this.rngi = rngi;
-	//	RobotData.INSTANCE.setMap(mapStr);
 		
 		// Load the map from testfile.txt
-		try { testMap(); } catch (IOException e) { }
+		//try { testMap(); } catch (IOException e) { }
 	}
 	
 	public void goToPoint(Point target) {
 		while (!pos2d.isDataReady());
 		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
 		System.out.println("Going from " + startPoint + " to " + target);
+		mapArray = RobotData.INSTANCE.getMap();
 		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
     	ArrayList<Point> straight = straightLines(path);
     	for(int i=0;i<straight.size();i++){
@@ -66,7 +66,7 @@ public class PathPlanner {
 	private void executePath(ArrayList<Point> nodes) {
 		int i=0;
 		for(int j=0;j<nodes.size();j++)
-			WallFollower.map[nodes.get(j).x][nodes.get(j).y] =4;
+			mapArray[nodes.get(j).x][nodes.get(j).y] =4;
 		while(i<nodes.size()){
 			
 			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), Math.PI/2);
@@ -123,7 +123,7 @@ public class PathPlanner {
     		for(int j=0;j<l;j++)
     			arr[i][j] = Integer.parseInt(mapArray[i][j]);
 */ 
-    	RobotData.INSTANCE.setMap(WallFollower.map);
+    	RobotData.INSTANCE.setMap(mapArray);
     }
 	
     private double transformX (int X){
@@ -238,26 +238,26 @@ public class PathPlanner {
 		int k = Integer.parseInt(str.split(" ")[2]);
         for(int alfa = i-1; alfa<= i+1; alfa++)
             for(int beta = j-1; beta<=j+1;beta++){
-				if(WallFollower.map[alfa][beta] == 3 &&(alfa != i || beta != j)){
+				if(mapArray[alfa][beta] == 3 &&(alfa != i || beta != j)){
 					if((alfa+beta)%2 != (i+j)%2){
 						neighbors.add(alfa + " " + beta+ " " + (10+k + getH(alfa+" " + beta, tar)));
 					}
 					else{
 						if((alfa == i-1) && (beta == j-1) && 
-							WallFollower.map[i-1][j] == 3 && 
-							WallFollower.map[i][j-1] == 3)
+							mapArray[i-1][j] == 3 && 
+							mapArray[i][j-1] == 3)
 							neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 						else if((alfa == i-1) && (beta == j+1) && 
-								WallFollower.map[i-1][j] == 3 && 
-								WallFollower.map[i][j+1] == 3)
+								mapArray[i-1][j] == 3 && 
+								mapArray[i][j+1] == 3)
 								neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 							else if((alfa == i+1) && (beta == j-1) && 
-									WallFollower.map[i][j-1] == 3 && 
-									WallFollower.map[i+1][j] == 3)
+									mapArray[i][j-1] == 3 && 
+									mapArray[i+1][j] == 3)
 									neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 								else if((alfa == i+1) && (beta == j+1) && 
-										WallFollower.map[i+1][j] == 3 && 
-										WallFollower.map[i][j+1] == 3)
+										mapArray[i+1][j] == 3 && 
+										mapArray[i][j+1] == 3)
 										neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
 					}
 				}
