@@ -35,7 +35,7 @@ public class PathPlanner {
 	Position2DInterface pos2d;
 	RangerInterface rngi;
 	
-	public PathPlanner(Position2DInterface pos2d , RangerInterface rngi, int[][] mapStr) {
+	public PathPlanner(Position2DInterface pos2d , RangerInterface rngi) {
 		this.pos2d = pos2d;
 		this.rngi = rngi;
 		
@@ -48,6 +48,11 @@ public class PathPlanner {
 		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
 		System.out.println("Going from " + startPoint + " to " + target);
 		mapArray = RobotData.INSTANCE.getMap();
+    	for(int i= 0;i<mapArray.length; i++) {
+    		for(int j= 0;j<mapArray[i].length; j++)
+    			System.out.print(mapArray[i][j] + " ");
+    		System.out.println();
+    	}
 		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
     	ArrayList<Point> straight = straightLines(path);
     	for(int i=0;i<straight.size();i++){
@@ -114,22 +119,33 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
- /**   	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
+    	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
     	int h = mapArray.length;
     	int l = mapArray[0].length;
     	int[][] arr = new int[h][l];
-    	array = arr;
     	for(int i=0;i<h;i++)
     		for(int j=0;j<l;j++)
     			arr[i][j] = Integer.parseInt(mapArray[i][j]);
-*/ 
-    	RobotData.INSTANCE.setMap(mapArray);
+ 
+    	RobotData.INSTANCE.setMap(arr);
+    	
+    	ArrayList<Point> garb = new ArrayList<Point>();
+    	garb.add(new Point((int)RobotData.convertX(-9),(int)RobotData.convertY(0)));
+    	//garb.add(new Point((int)RobotData.convertX(-8),(int)RobotData.convertY(0)));
+    	//garb.add(new Point((int)RobotData.convertX(-7),(int)RobotData.convertY(-6)));
+    	//garb.add(new Point((int)RobotData.convertX(-5),(int)RobotData.convertY(1)));
+    	//garb.add(new Point((int)RobotData.convertX(-6),(int)RobotData.convertY(4)));
+    	//garb.add(new Point((int)RobotData.convertX(-2),(int)RobotData.convertY(6)));
+    	//garb.add(new Point((int)RobotData.convertX(-1),(int)RobotData.convertY(4)));
+
+    	
+    	RobotData.INSTANCE.setGarbage(garb);
     }
 	
-    private double transformX (int X){
+    private static double transformX (int X){
     	return ((X/ RobotData.RESOLUTION) -RobotData.LENGTH_OFFSET);
     }
-    private double transformY (int Y){
+    private static double transformY (int Y){
     	return ((RobotData.ARRAY_HEIGHT - Y)/RobotData.RESOLUTION) - RobotData.HEIGHT_OFFSET;
     }
 	
@@ -337,6 +353,19 @@ public class PathPlanner {
 		if((a<b+c)&&(a>b-c))
 			return true;
 		else return false;
+	}
+
+	public void goToPenultimate(Point target) {
+		while (!pos2d.isDataReady());
+		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
+		System.out.println("Going from " + startPoint + " to " + target);
+		mapArray = RobotData.INSTANCE.getMap();
+		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+    	ArrayList<Point> straight = straightLines(path);
+    	// remove the last node
+    	straight.remove(straight.size()-1);
+    	executePath(straight);
+		
 	}
 	
 }

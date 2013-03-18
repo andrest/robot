@@ -1,5 +1,9 @@
 package Rumbaugh;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import Rumbaugh.Robot.Solo;
 import Rumbaugh.View.RobotUserInterface;
 
@@ -14,41 +18,47 @@ public class MainApp {
 	public static void main(String [] args){
         	
         if(args.length > 0){
-        		
-        	boolean test = true;
-           	int i = 0;
-            	
-           	while(i<args.length && test){
-            		
-           		if(args[i].equals("-gui"))
-           			new RobotUserInterface().setVisible(true);
-            		
-           		else if(args[i].equals("-solo"))
-           			soloRobot = new Solo();
-           		
-           		
-            	else if(args[i].equals("-multi"))
-            		test = false;  
-            	i++;
-            }
-            	
-            if(test){
-            		
-            	for(int j = 0; j<args.length; j++){
-            			
-            		if(args[j].equals("-explore"))
-            			//this is where the explore code goes
-                           soloRobot.startMapping();
-            			
-            		else if(args[j].equals("-collect")){
-            			 double x1 = Double.parseDouble(args[i + 1]);
-                         double y1 = Double.parseDouble(args[i + 2]);
-                         double x2 = Double.parseDouble(args[i + 3]);
-                         double y2 = Double.parseDouble(args[i + 4]);
-                         System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
-            		}
+        	List<String> arguments = Arrays.asList(args);
+        	
+        	if(arguments.contains("-gui")) {
+        		RobotUserInterface gui = new RobotUserInterface();
+        		gui.setVisible(true);
+        	
+            	if(arguments.contains("-solo"))
+            		gui.getSoloRadioButton().setSelected(true);
+            		soloRobot = new Solo();
+            	if(arguments.contains("-explore") && arguments.contains("-solo")) {
+            		gui.getExploreButton().setEnabled(false);
+            		gui.getCollectButton().setEnabled(false);
+            		soloRobot.startMapping();
+            		gui.getCollectButton().setEnabled(true);
+    		    	if(arguments.contains("-collect")) {
+    		    		gui.getCollectButton().setEnabled(false);
+    		    		int i = arguments.indexOf("-collect");
+    		    		double x1 = Double.parseDouble(arguments.get(i + 1));
+    		            double y1 = Double.parseDouble(arguments.get(i + 2));
+    		            double x2 = Double.parseDouble(arguments.get(i + 3));
+    		            double y2 = Double.parseDouble(arguments.get(i + 4));
+    		            soloRobot.collectGarbage(x1,y1,x2,y2);
+    		    	}
             	}
-            }
+        	} else {
+	        	if(arguments.contains("-solo"))
+	        		soloRobot = new Solo();
+	        	else if(arguments.contains("-multi"));
+	        		//;
+	        	if(arguments.contains("-explore") && arguments.contains("-solo")) {	
+	        		soloRobot.startMapping();
+			    	if(arguments.contains("-collect")) {
+			    		int i = arguments.indexOf("-collect");
+			    		double x1 = Double.parseDouble(arguments.get(i + 1));
+			            double y1 = Double.parseDouble(arguments.get(i + 2));
+			            double x2 = Double.parseDouble(arguments.get(i + 3));
+			            double y2 = Double.parseDouble(arguments.get(i + 4));
+			            soloRobot.collectGarbage(x1,y1,x2,y2);
+			    	}
+	        	}
+        	}
         }
     }
 }

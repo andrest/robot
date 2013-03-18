@@ -2,6 +2,7 @@ package Rumbaugh;
 
 
 import java.awt.Point;
+import java.io.IOException;
 
 import javaclient3.FiducialInterface;
 import javaclient3.PlayerClient;
@@ -62,12 +63,12 @@ public class WallFollower{
 	static boolean wallBoolean = false;
 	
 	
-    public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid){
-    	this.robot = robot;
-    	this.posi = posi;
-    	this.rngi = rngi;
-    	this.fid = fid;
-    	pathPlanner = new PathPlanner(posi, rngi, map);
+    public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid, PathPlanner pathPlanner){
+    	WallFollower.robot = robot;
+    	WallFollower.posi = posi;
+    	WallFollower.rngi = rngi;
+    	WallFollower.fid = fid;
+    	//WallFollower.pathPlanner = pathPlanner;
     }
     
     public static void map(){
@@ -118,7 +119,7 @@ public class WallFollower{
     	int tarX = Integer.parseInt(coor.split(" ")[0]);
     	int tarY = Integer.parseInt(coor.split(" ")[1]);
     	//path planning, going to unexplored
-   // 	pathPlanner = new PathPlanner(posi, rngi, map);
+    	pathPlanner = new PathPlanner(posi, rngi);
           pathPlanner.goToPoint(new Point(tarX, tarY));
     	
           posi.setSpeed(0,0.3);

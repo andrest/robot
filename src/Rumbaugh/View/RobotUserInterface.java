@@ -70,21 +70,21 @@ public class RobotUserInterface extends JFrame {
 	 * that will be added to the GUI
 	 */
 	private void initWidgets(){		
-		exploreButton = new JButton("Explore");
-		mapButton = new JButton("Map");
-		collectButton = new JButton("Collect");
+		setExploreButton(new JButton("Explore"));
+		mapButton = new JButton("Save Map");
+		setCollectButton(new JButton("Collect"));
 		
 		x1Label = new JLabel("X1:");
 		y1Label = new JLabel("Y1:");
 		x2Label = new JLabel("X2:");
 		y2Label = new JLabel("Y2:");
 		
-		soloRadioButton = new JRadioButton("Solo");
+		setSoloRadioButton(new JRadioButton("Solo"));
 		multiRadioButton = new JRadioButton("Multi");
 		
 		buttonGroup = new ButtonGroup();
 		
-		buttonGroup.add(soloRadioButton);
+		buttonGroup.add(getSoloRadioButton());
 		buttonGroup.add(multiRadioButton);
 		
 		panelSouth = new JPanel();
@@ -114,9 +114,9 @@ public class RobotUserInterface extends JFrame {
 		
 		this.add(panelCentre, BorderLayout.CENTER);
 		
-		panelSouth.add(exploreButton);
+		panelSouth.add(getExploreButton());
 		panelSouth.add(mapButton);
-		panelSouth.add(collectButton);
+		panelSouth.add(getCollectButton());
 		
 		panelSouth.add(x1Label);
 		panelSouth.add(x1TextField);
@@ -130,7 +130,7 @@ public class RobotUserInterface extends JFrame {
 		panelSouth.add(y2Label);
 		panelSouth.add(y2TextField);
 		
-		panelSouth.add(soloRadioButton);
+		panelSouth.add(getSoloRadioButton());
 		panelSouth.add(multiRadioButton);
 	}
 	
@@ -140,11 +140,11 @@ public class RobotUserInterface extends JFrame {
 	 * buttons that are placed in the GUI
 	 */
 	private void actionListeners(){
-		exploreButton.addActionListener(new ActionListener() {
+		getExploreButton().addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(soloRadioButton.isSelected() == false && multiRadioButton.isSelected() == false)
+				if(getSoloRadioButton().isSelected() == false && multiRadioButton.isSelected() == false)
 				{
 					JOptionPane.showMessageDialog(null, "Choose a mode of Operation", "Robot Operation Mode", JOptionPane.WARNING_MESSAGE);
 				}
@@ -154,8 +154,14 @@ public class RobotUserInterface extends JFrame {
 						
 						@Override
 						public void run() {
+							getExploreButton().setEnabled(false);
+							mapButton.setEnabled(false);
+							getCollectButton().setEnabled(false);
 							Solo soloRobot = new Solo();
 							soloRobot.startMapping();
+							mapButton.setEnabled(true);
+							getCollectButton().setEnabled(true);
+							
 						}
 					});
 					exploreThread.start();
@@ -178,11 +184,11 @@ public class RobotUserInterface extends JFrame {
 			}
 		});
 		
-		collectButton.addActionListener(new ActionListener() {
+		getCollectButton().addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(x1TextField.getText().isEmpty() || y1TextField.getText().isEmpty() || x2TextField.getText().isEmpty() || y2TextField.getText().isEmpty() || (soloRadioButton.isSelected() == false && multiRadioButton.isSelected() == false))
+				if(x1TextField.getText().isEmpty() || y1TextField.getText().isEmpty() || x2TextField.getText().isEmpty() || y2TextField.getText().isEmpty() || (getSoloRadioButton().isSelected() == false && multiRadioButton.isSelected() == false))
 				{
 					JOptionPane.showMessageDialog(null, "Enter the coordinates for the collection area and also choose the operation mode", "Collection Coordinates", JOptionPane.WARNING_MESSAGE);
 				}
@@ -192,6 +198,8 @@ public class RobotUserInterface extends JFrame {
 				}
 				else
 				{
+					getExploreButton().setEnabled(false);
+					getCollectButton().setEnabled(false);
 					System.out.println("The collect button was pressed with coordinates \n X1: "+x1TextField.getText()+"\n Y1: "+y1TextField.getText()+"\n X2: "+x2TextField.getText()+"\n Y2: "+y2TextField.getText()+"\n Operation Mode: "+findModeSelection());
 				}
 			}
@@ -233,4 +241,45 @@ public class RobotUserInterface extends JFrame {
 		return null;
 	}
 
+	/**
+	 * @return the soloRadioButton
+	 */
+	public JRadioButton getSoloRadioButton() {
+		return soloRadioButton;
+	}
+
+	/**
+	 * @param soloRadioButton the soloRadioButton to set
+	 */
+	public void setSoloRadioButton(JRadioButton soloRadioButton) {
+		this.soloRadioButton = soloRadioButton;
+	}
+
+	/**
+	 * @return the exploreButton
+	 */
+	public JButton getExploreButton() {
+		return exploreButton;
+	}
+
+	/**
+	 * @param exploreButton the exploreButton to set
+	 */
+	public void setExploreButton(JButton exploreButton) {
+		this.exploreButton = exploreButton;
+	}
+
+	/**
+	 * @return the collectButton
+	 */
+	public JButton getCollectButton() {
+		return collectButton;
+	}
+
+	/**
+	 * @param collectButton the collectButton to set
+	 */
+	public void setCollectButton(JButton collectButton) {
+		this.collectButton = collectButton;
+	}
 }

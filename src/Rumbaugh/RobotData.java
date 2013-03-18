@@ -31,7 +31,6 @@ public enum RobotData {
         static final int LENGTH_OFFSET=22;
         
         private static int[][] mapArray;
-        private static int[][] usedArray;
         private static ArrayList<Point> garbage;
         
         private static Timer timer;
@@ -76,6 +75,12 @@ public enum RobotData {
             return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
             				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
         }
+        static public double convertX(double x) {
+        	return Math.round(RESOLUTION*(LENGTH_OFFSET+x));
+        }
+        static public double convertY(double y) {
+        	return Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + y));
+        }
         
         private int[][] trimMap(int[][] map) {
         	int startRow = 0, startColumn = 0;
@@ -85,7 +90,7 @@ public enum RobotData {
         	outer:
 		    for(int i=map.length-1; i >= 0; i--) {
 	            for(int j=map[0].length-1; j >= 0; j--) {
-	            	if (map[i][j] == 1){
+	            	if (map[i][j] != 1){
 	            		endRow = i+1;
 	            		break outer;
 	            	}
@@ -259,5 +264,10 @@ public enum RobotData {
 
 	public ArrayList<Point> getGarbage() {
 		return garbage;
+	}
+
+	public void setGarbage(ArrayList<Point> garb) {
+		garbage = garb;
+		
 	}
 }

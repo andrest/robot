@@ -3,6 +3,7 @@ package Rumbaugh;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import javaclient3.GripperInterface;
 import javaclient3.Position2DInterface;
 
 public class GarbageCollector {
@@ -11,16 +12,17 @@ public class GarbageCollector {
 	private Point designated;
 	
 
-	public GarbageCollector(PathPlanner pathPlanner, Point designatedA, Point designatedB) {
+	public GarbageCollector(GripperInterface gripper_0, PathPlanner pathPlanner, Point designatedA, Point designatedB) {
 		this.pathPlanner = pathPlanner;
 		setDesignated(designatedA, designatedB);
 	}
-	
+
 	public void startCollection() {
 		garbages = RobotData.INSTANCE.getGarbage();
 		for (Point garbage : garbages) {
 			fetchGarbage(garbage);
-			disposeGarbage(garbage);
+			System.out.println("Garbage fetched");
+			//disposeGarbage(garbage);
 		}
 	}
 	private void disposeGarbage(Point garbage) {
@@ -30,7 +32,7 @@ public class GarbageCollector {
 
 	private void fetchGarbage(Point garbage) {
 		pathPlanner.goToPenultimate(garbage);
-		dockToGarbage(garbage);
+		//dockToGarbage(garbage);
 	}
 
 	private void dockToGarbage(Point garbage) {
@@ -39,7 +41,7 @@ public class GarbageCollector {
 	}
 	
 	private void setDesignated(Point a, Point b) {
-		// designated = centre of a and b;
+		designated = new Point((int)(a.x + b.x)/2, (int)(a.y + b.y)/2);
 	}
 
 }
