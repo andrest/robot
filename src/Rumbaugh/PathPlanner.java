@@ -49,9 +49,9 @@ public class PathPlanner {
 //		System.out.println("Going from " + startPoint + " to " + target);
 		mapArray = RobotData.INSTANCE.getMap();
 		ArrayList<Point> path = getPath(getLocation(), target);
-    	ArrayList<Point> straight = straightLines(path);
-    	for(int i=0;i<straight.size();i++){
-    		System.out.println(straight.get(i));
+		ArrayList<Point> straight = straightLines(path);
+    	for(int i=0;i<path.size();i++){
+    		System.out.println(path.get(i));
     	}
     	executePath(straight);
 		
@@ -66,7 +66,7 @@ public class PathPlanner {
 	public void executePath(ArrayList<Point> nodes) {
 		int i=1;
 		for(int j=0;j<nodes.size();j++)
-			mapArray[nodes.get(j).x][nodes.get(j).y] =4;
+			mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
 		while(i<nodes.size()){
 			
 			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), Math.PI/2);
@@ -124,12 +124,24 @@ public class PathPlanner {
     			arr[i][j] = Integer.parseInt(mapArray[i][j]);
     	
     	RobotData.INSTANCE.setMap(arr);
+    	
+    	ArrayList<Point> garb = new ArrayList<Point>();
+    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
+    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertY(-8)));
+    	garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertY(-7)));
+    	garb.add(new Point((int)RobotData.convertY(1),(int)RobotData.convertY(-5)));
+    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-6)));
+    	garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertY(-2)));
+    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-1)));
+
+    	
+    	RobotData.INSTANCE.setGarbage(garb);
     }
 	
-    private double transformX (int X){
+    private static double transformX (int X){
     	return ((X/ RobotData.RESOLUTION) -RobotData.LENGTH_OFFSET);
     }
-    private double transformY (int Y){
+    private static double transformY (int Y){
     	return ((RobotData.ARRAY_HEIGHT - Y)/RobotData.RESOLUTION) - RobotData.HEIGHT_OFFSET;
     }
 	

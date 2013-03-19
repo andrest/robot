@@ -36,7 +36,7 @@ public enum RobotData {
         private static Timer timer;
         private static Image mapImage;
         private JPanel panel;
-		private Position2DInterface pos2d;
+		private static Position2DInterface pos2d;
 		private static BufferedImage bufferedImage;
 		private static String state;
         
@@ -66,20 +66,23 @@ public enum RobotData {
                 }
         }, 0, 750);
         }
+        
         /**
          * @return Point representing the robot's co-ordinate location
          * on the real map
          */
         public Point getLocation() {
         	while (!pos2d.isDataReady()) {};
-            return new Point((int)Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + pos2d.getY())),
-            				 (int)Math.round(RESOLUTION*(LENGTH_OFFSET+pos2d.getX())));
+            return new Point((int)convertY(pos2d.getY()),
+            				 (int)convertX(pos2d.getX()));
         }
-        static public double convertX(double x) {
-        	return Math.round(RESOLUTION*(LENGTH_OFFSET+x));
+
+        static public double convertY(double a) {
+        	return Math.round((ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + a))*100)/100;
         }
-        static public double convertY(double y) {
-        	return Math.round(ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + y));
+        // Return e.g. 4.56
+        static public double convertX(double a) {
+        	return Math.round(RESOLUTION*(LENGTH_OFFSET+a)*100)/100;
         }
         
         private int[][] trimMap(int[][] map) {

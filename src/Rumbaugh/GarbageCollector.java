@@ -22,6 +22,7 @@ public class GarbageCollector {
 		for (Point garbage : garbages) {
 			fetchGarbage(garbage);
 			System.out.println("Garbage fetched");
+			//System.out.println(RobotData.INSTANCE.getLocation());
 			//disposeGarbage(garbage);
 		}
 	}
