@@ -2,7 +2,6 @@ package Rumbaugh;
 
 
 import java.awt.Point;
-import java.io.IOException;
 
 import javaclient3.FiducialInterface;
 import javaclient3.PlayerClient;
@@ -64,11 +63,11 @@ public class WallFollower{
 	
 	
     public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid, PathPlanner pathPlanner){
-    	WallFollower.robot = robot;
-    	WallFollower.posi = posi;
-    	WallFollower.rngi = rngi;
-    	WallFollower.fid = fid;
-    	//WallFollower.pathPlanner = pathPlanner;
+    	this.robot = robot;
+    	this.posi = posi;
+    	this.rngi = rngi;
+    	this.fid = fid;
+    	this.pathPlanner = pathPlanner;
     }
     
     public static void map(){
@@ -119,7 +118,8 @@ public class WallFollower{
     	int tarX = Integer.parseInt(coor.split(" ")[0]);
     	int tarY = Integer.parseInt(coor.split(" ")[1]);
     	//path planning, going to unexplored
-    	pathPlanner = new PathPlanner(posi, rngi);
+   // 	pathPlanner = new PathPlanner(posi, rngi, map);
+    	map[tarX][tarY] = 3;
           pathPlanner.goToPoint(new Point(tarX, tarY));
     	
           posi.setSpeed(0,0.3);
@@ -172,18 +172,12 @@ public class WallFollower{
             yawSpeed = 0;
           
             // if we're getting too close to the wall with the front side...
-            if (frontSide < MAX_WALL_THRESHOLD && sonarValues[3]<1 && sonarValues[4]<1) {
+            if (frontSide < MAX_WALL_THRESHOLD) {
                 // back up a little bit if we're bumping in front
                 xSpeed   = -0.10f;
                 yawSpeed = - DEF_YAW_SPEED * 3;
             } else
             	if(sonarValues[3] > 1.7){
-//            		if(sonarValues[4]>1.2){
-//            			yawSpeed = 0.3;
-//            		}
-//            		else
-//            		yawSpeed = 0.2;
-//            		xSpeed = 0.15;
             		turnLeft(posi);
             	}
             	else
@@ -214,10 +208,10 @@ public class WallFollower{
             	tempLeftSide = sonarValues [4];
             	mapWalls();
             }
-            while(!fid.isDataReady());
-            PlayerFiducialItem[] data = fid.getData().getFiducials();
+            while(!WallFollower.fid.isDataReady());
+            PlayerFiducialItem[] data = WallFollower.fid.getData().getFiducials();
             if(data.length>0)
-            mapGarbage(posi, fid);
+            WallFollower.mapGarbage();
          
             // Move the robot
             posi.setSpeed (xSpeed, yawSpeed);
@@ -355,7 +349,7 @@ public class WallFollower{
     	return b;
     }
     
-    static void mapGarbage(Position2DInterface posi, FiducialInterface fid){
+    static void mapGarbage(){
     	while(!posi.isDataReady());
 		tempPositionX = posi.getX();
 		tempPositionY = posi.getY();
@@ -521,6 +515,7 @@ class WallMapper implements Runnable{
 			WallFollower.mapWalls();
 		else
 			System.out.println("Not currently mapping walls");
+
 		try { Thread.sleep(100);} catch (Exception e) {}
 		}
 	}

@@ -40,20 +40,15 @@ public class PathPlanner {
 		this.rngi = rngi;
 		
 		// Load the map from testfile.txt
-		//try { testMap(); } catch (IOException e) { }
+	//	try { testMap(); } catch (IOException e) { }
 	}
 	
 	public void goToPoint(Point target) {
-		while (!pos2d.isDataReady());
-		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
-		System.out.println("Going from " + startPoint + " to " + target);
+//		while (!pos2d.isDataReady());
+//		Point startPoint = new Point(getLocation());
+//		System.out.println("Going from " + startPoint + " to " + target);
 		mapArray = RobotData.INSTANCE.getMap();
-    	for(int i= 0;i<mapArray.length; i++) {
-    		for(int j= 0;j<mapArray[i].length; j++)
-    			System.out.print(mapArray[i][j] + " ");
-    		System.out.println();
-    	}
-		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+		ArrayList<Point> path = getPath(getLocation(), target);
     	ArrayList<Point> straight = straightLines(path);
     	for(int i=0;i<straight.size();i++){
     		System.out.println(straight.get(i));
@@ -68,8 +63,8 @@ public class PathPlanner {
 		return reconstructPath();
 	}
 	
-	private void executePath(ArrayList<Point> nodes) {
-		int i=0;
+	public void executePath(ArrayList<Point> nodes) {
+		int i=1;
 		for(int j=0;j<nodes.size();j++)
 			mapArray[nodes.get(j).x][nodes.get(j).y] =4;
 		while(i<nodes.size()){
@@ -88,7 +83,7 @@ public class PathPlanner {
 				if(min<sonars[2])
 					min = sonars[2];
 				while(!pos2d.isDataReady());
-				if(inRange(pp2d.getPx(),pos2d.getX(), 0.5) && inRange(pp2d.getPy(),pos2d.getY(),0.5) || min < 0.3){
+				if(inRange(pp2d.getPx(),pos2d.getX(), 0.4) && inRange(pp2d.getPy(),pos2d.getY(),0.4) || min < 0.3){
 					b= false;
 	
 				}
@@ -123,29 +118,18 @@ public class PathPlanner {
     	int h = mapArray.length;
     	int l = mapArray[0].length;
     	int[][] arr = new int[h][l];
+    	array = arr;
     	for(int i=0;i<h;i++)
     		for(int j=0;j<l;j++)
     			arr[i][j] = Integer.parseInt(mapArray[i][j]);
- 
+    	
     	RobotData.INSTANCE.setMap(arr);
-    	
-    	ArrayList<Point> garb = new ArrayList<Point>();
-    	garb.add(new Point((int)RobotData.convertX(-9),(int)RobotData.convertY(0)));
-    	//garb.add(new Point((int)RobotData.convertX(-8),(int)RobotData.convertY(0)));
-    	//garb.add(new Point((int)RobotData.convertX(-7),(int)RobotData.convertY(-6)));
-    	//garb.add(new Point((int)RobotData.convertX(-5),(int)RobotData.convertY(1)));
-    	//garb.add(new Point((int)RobotData.convertX(-6),(int)RobotData.convertY(4)));
-    	//garb.add(new Point((int)RobotData.convertX(-2),(int)RobotData.convertY(6)));
-    	//garb.add(new Point((int)RobotData.convertX(-1),(int)RobotData.convertY(4)));
-
-    	
-    	RobotData.INSTANCE.setGarbage(garb);
     }
 	
-    private static double transformX (int X){
+    private double transformX (int X){
     	return ((X/ RobotData.RESOLUTION) -RobotData.LENGTH_OFFSET);
     }
-    private static double transformY (int Y){
+    private double transformY (int Y){
     	return ((RobotData.ARRAY_HEIGHT - Y)/RobotData.RESOLUTION) - RobotData.HEIGHT_OFFSET;
     }
 	
@@ -331,6 +315,19 @@ public class PathPlanner {
 		
 		return sLines;
 	}
+	
+    public void goToPenultimate(Point target) {
+        while (!pos2d.isDataReady());
+        Point startPoint = new Point(RobotData.INSTANCE.getLocation());
+        System.out.println("Going from " + startPoint + " to " + target);
+        mapArray = RobotData.INSTANCE.getMap();
+        ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+        ArrayList<Point> straight = straightLines(path);
+        // remove the last node
+        straight.remove(straight.size()-1);
+        executePath(straight);
+        
+}
 	public int getDirection(Point p, Point q){
 		if(p.x == q.x && p.y+1 == q.y)
 			return 0;
@@ -353,19 +350,6 @@ public class PathPlanner {
 		if((a<b+c)&&(a>b-c))
 			return true;
 		else return false;
-	}
-
-	public void goToPenultimate(Point target) {
-		while (!pos2d.isDataReady());
-		Point startPoint = new Point(RobotData.INSTANCE.getLocation());
-		System.out.println("Going from " + startPoint + " to " + target);
-		mapArray = RobotData.INSTANCE.getMap();
-		ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
-    	ArrayList<Point> straight = straightLines(path);
-    	// remove the last node
-    	straight.remove(straight.size()-1);
-    	executePath(straight);
-		
 	}
 	
 }
