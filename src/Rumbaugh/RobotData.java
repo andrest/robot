@@ -23,9 +23,9 @@ import javax.swing.JPanel;
 public enum RobotData {
         INSTANCE;
 
-        public static final int ARRAY_LENGTH = 180;
-        public static final int ARRAY_HEIGHT = 120;
-        public static final int RESOLUTION = 4;
+        public static final int ARRAY_LENGTH = 450;
+        public static final int ARRAY_HEIGHT = 320;
+        public static final int RESOLUTION = 10;
         public static final int SCALE = 800;
         static final int HEIGHT_OFFSET=15;
         static final int LENGTH_OFFSET=22;
@@ -36,9 +36,9 @@ public enum RobotData {
         private static Timer timer;
         private static Image mapImage;
         private JPanel panel;
-		private static Position2DInterface pos2d;
-		private static BufferedImage bufferedImage;
-		private static String state;
+                private static Position2DInterface pos2d;
+                private static BufferedImage bufferedImage;
+                private static String state;
         
         RobotData() { }
         
@@ -72,73 +72,73 @@ public enum RobotData {
          * on the real map
          */
         public Point getLocation() {
-        	while (!pos2d.isDataReady()) {};
+                while (!pos2d.isDataReady()) {};
             return new Point((int)convertY(pos2d.getY()),
-            				 (int)convertX(pos2d.getX()));
+                                         (int)convertX(pos2d.getX()));
         }
 
         static public double convertY(double a) {
-        	return Math.round((ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + a))*100)/100;
+                return Math.round((ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + a))*100)/100;
         }
         // Return e.g. 4.56
         static public double convertX(double a) {
-        	return Math.round(RESOLUTION*(LENGTH_OFFSET+a)*100)/100;
+                return Math.round(RESOLUTION*(LENGTH_OFFSET+a)*100)/100;
         }
         
         private int[][] trimMap(int[][] map) {
-        	int startRow = 0, startColumn = 0;
-        	int endRow = 0, endColumn = 0;
+                int startRow = 0, startColumn = 0;
+                int endRow = 0, endColumn = 0;
 
-		    // Bottom horizontal
-        	outer:
-		    for(int i=map.length-1; i >= 0; i--) {
-	            for(int j=map[0].length-1; j >= 0; j--) {
-	            	if (map[i][j] != 1){
-	            		endRow = i+1;
-	            		break outer;
-	            	}
-	            }
-		    }
-		    // Right Side vertical
-        	outer:
-        	for(int j=map[0].length-1; j >= 0; j--) {
-        		for(int i=map.length-1; i >= 0; i--) {
-	            	if (map[i][j] == 1){
-	            		endColumn = j+1;
-	            		break outer;
-	            	}
-	            }
-		    }
-		    
-		    // Top horizontal
-		    outer:
-		    for(int i=0; i < map.length; i++) {
-	            for(int j=0; j < map[0].length; j++) {
-	            	if (map[i][j] == 1){
-	            		startRow = i;
-	            		break outer;
-	            	}
-	            }
-		    }
-		    // Left side horizontal
-		    outer:
-		    for(int j=0; j < map[0].length; j++) {
-		    	for(int i=0; i < map.length; i++) {
-	            	if (map[i][j] == 1){
-	            		startColumn = j;
-	            		break outer;
-	            	}
-		        }
-		    }
+                    // Bottom horizontal
+                outer:
+                    for(int i=map.length-1; i >= 0; i--) {
+                    for(int j=map[0].length-1; j >= 0; j--) {
+                        if (map[i][j] != 1){
+                                endRow = i+1;
+                                break outer;
+                        }
+                    }
+                    }
+                    // Right Side vertical
+                outer:
+                for(int j=map[0].length-1; j >= 0; j--) {
+                        for(int i=map.length-1; i >= 0; i--) {
+                        if (map[i][j] == 1){
+                                endColumn = j+1;
+                                break outer;
+                        }
+                    }
+                    }
+                    
+                    // Top horizontal
+                    outer:
+                    for(int i=0; i < map.length; i++) {
+                    for(int j=0; j < map[0].length; j++) {
+                        if (map[i][j] == 1){
+                                startRow = i;
+                                break outer;
+                        }
+                    }
+                    }
+                    // Left side horizontal
+                    outer:
+                    for(int j=0; j < map[0].length; j++) {
+                        for(int i=0; i < map.length; i++) {
+                        if (map[i][j] == 1){
+                                startColumn = j;
+                                break outer;
+                        }
+                        }
+                    }
 
-		    // Create the new trimmed array
-		    int[][] trimmedMap = new int[endRow-startRow][endColumn-startColumn];
-		    for(int i=0; i < endRow-startRow; i++) {
-		    	for(int j= 0; j < endColumn-startColumn; j++){    		
-		    		trimmedMap[i][j] = map[startRow+i][startColumn+j];
-		    	}
-		    }
-		    return trimmedMap;
+                    // Create the new trimmed array
+                    int[][] trimmedMap = new int[endRow-startRow][endColumn-startColumn];
+                    for(int i=0; i < endRow-startRow; i++) {
+                        for(int j= 0; j < endColumn-startColumn; j++){                  
+                                trimmedMap[i][j] = map[startRow+i][startColumn+j];
+                        }
+                    }
+                    return trimmedMap;
         }
 
         public void stopUpdatingImage() {
@@ -170,7 +170,7 @@ public enum RobotData {
         if (rval == JFileChooser.APPROVE_OPTION) {
             saveFile = chooser.getSelectedFile();
             try {
-            	ImageIO.write(image, "jpg", saveFile);
+                ImageIO.write(image, "jpg", saveFile);
             } catch (IOException ex) {
             }
         }
@@ -206,7 +206,13 @@ public enum RobotData {
                                 color = Color.GRAY.getRGB();
                                 break;
                         case 4:
-                        		color = Color.YELLOW.getRGB();
+                                color = Color.YELLOW.getRGB();
+                                break;
+                        case 6:
+                        		color = Color.BLUE.getRGB();
+                        		break;
+                        case 9: 
+                        		color = Color.BLACK.getRGB();
                         		break;
                         default:
                                 color = Color.DARK_GRAY.getRGB();
@@ -224,12 +230,12 @@ public enum RobotData {
      * @return BufferedImage scaled as it appears in the GUI
      */
     public BufferedImage getScaledBufferedImage(){
-    	Image bigMap = toImage(trimMap(mapArray)).getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
-    	BufferedImage bufferedBigMap = new BufferedImage(bigMap.getWidth(null),
-    	                                                 bigMap.getHeight(null),
-    	                                                 BufferedImage.TYPE_INT_RGB);
-    	bufferedBigMap.getGraphics().drawImage(bigMap, 0, 0, null);
-    	return bufferedBigMap;
+        Image bigMap = toImage(trimMap(mapArray)).getScaledInstance(SCALE, -1, Image.SCALE_SMOOTH);
+        BufferedImage bufferedBigMap = new BufferedImage(bigMap.getWidth(null),
+                                                         bigMap.getHeight(null),
+                                                         BufferedImage.TYPE_INT_RGB);
+        bufferedBigMap.getGraphics().drawImage(bigMap, 0, 0, null);
+        return bufferedBigMap;
     }
     public Image getMapImage() { return mapImage; };
     public int[][] getMap() { return mapArray; }
@@ -238,22 +244,22 @@ public enum RobotData {
     public String getState() { return state; }
     /**
      * Returns the JPanel with the map image
-	 *
+         *
      * @return JPanel where the map image will be drawn
      */
     public JPanel getImagePanel() {
-    	JPanel panel = new JPanel() {
-    		private static final long serialVersionUID = 1L;
+        JPanel panel = new JPanel() {
+                private static final long serialVersionUID = 1L;
 
             @Override
             public void paintComponent(Graphics g) {
-            	super.paintComponent(g);
+                super.paintComponent(g);
                 if (mapImage == null) return;
                 g.drawImage(mapImage, 0, 0, mapImage.getWidth(null), mapImage.getHeight(null), null);
             }
             @Override  
             public Dimension getPreferredSize(){
-            	if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
+                if (mapImage == null) return new Dimension(SCALE ,SCALE*ARRAY_HEIGHT/ARRAY_LENGTH);
                 return new Dimension(mapImage.getWidth(null), mapImage.getHeight(null));  
             }  
         };
@@ -261,16 +267,16 @@ public enum RobotData {
         return panel;
     }
 
-	public void setPos2d(Position2DInterface pos2d) {
-		this.pos2d = pos2d;	
-	}
+        public void setPos2d(Position2DInterface pos2d) {
+                this.pos2d = pos2d;     
+        }
 
-	public ArrayList<Point> getGarbage() {
-		return garbage;
-	}
+        public ArrayList<Point> getGarbage() {
+                return garbage;
+        }
 
-	public void setGarbage(ArrayList<Point> garb) {
-		garbage = garb;
-		
-	}
+        public void setGarbage(ArrayList<Point> garb) {
+                garbage = garb;
+                
+        }
 }
