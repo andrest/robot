@@ -159,7 +159,7 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-        String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
+        String[][] mapArray = mapFromFile("testmap2.txt");
         int h = mapArray.length;
         int l = mapArray[0].length;
         int[][] arr = new int[h][l];
