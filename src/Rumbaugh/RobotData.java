@@ -93,7 +93,7 @@ public enum RobotData {
                 outer:
                     for(int i=map.length-1; i >= 0; i--) {
                     for(int j=map[0].length-1; j >= 0; j--) {
-                        if (map[i][j] != 1){
+                        if (map[i][j] == 1){
                                 endRow = i+1;
                                 break outer;
                         }

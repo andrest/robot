@@ -50,11 +50,11 @@ public class PathPlanner {
 //		System.out.println("Going from " + startPoint + " to " + target);
 		mapArray = RobotData.INSTANCE.getMap();
 		ArrayList<Point> path = getPath(getLocation(), target);
-		ArrayList<Point> straight = straightLines(path);
-    	for(int i=0;i<path.size();i++){
-    		System.out.println(path.get(i));
+    	ArrayList<Point> straight = straightLines(path);
+    	for(int i=0;i<straight.size();i++){
+    		System.out.println(straight.get(i));
     	}
-    	executePath(straight,false);
+    	executePath(straight, false);
 		
 		//return when it gets to the point
 	}
@@ -63,7 +63,8 @@ public class PathPlanner {
 		Asearch(start, end);
 		return reconstructPath();
 	}
-	
+
+    
 	public static double getAngle(double a,double b,double c, double d){
 		if((a>=c&&b>=d)||(a>=c&&b<=d))
 			return Math.asin((d-b)/
@@ -80,8 +81,8 @@ public class PathPlanner {
 	}
 	
 	public void executePath(ArrayList<Point> nodes, boolean skipLast) {
-		//for(int j=0;j<nodes.size();j++)
-			//mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
+		for(int j=0;j<nodes.size();j++)
+			mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
 		double yaw;
 		ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
 		ArrayList<PlayerPose2d> posePath = new ArrayList<PlayerPose2d>();
@@ -158,29 +159,31 @@ public class PathPlanner {
         bufferedReader.close();
         return strng.toArray(new String[0][0]);
     }
+    
     public static void testMap() throws IOException{
-    	String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
-    	int h = mapArray.length;
-    	int l = mapArray[0].length;
-    	int[][] arr = new int[h][l];
-    	array = arr;
-    	for(int i=0;i<h;i++)
-    		for(int j=0;j<l;j++)
-    			arr[i][j] = Integer.parseInt(mapArray[i][j]);
-    	
-    	RobotData.INSTANCE.setMap(arr);
-    	
-    	ArrayList<Point> garb = new ArrayList<Point>();
-    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
-    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
-    	garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
-    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
-    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
-    	garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(-2)));
-    	//garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
+    	System.out.println("Start importing map");
+        String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
+        int h = mapArray.length;
+        int l = mapArray[0].length;
+        int[][] arr = new int[h][l];
+        array = arr;
+        for(int i=0;i<h;i++)
+                for(int j=0;j<l;j++)
+                        arr[i][j] = Integer.parseInt(mapArray[i][j]);
+        
+        RobotData.INSTANCE.setMap(arr);
+        System.out.println("Map imported");
+        ArrayList<Point> garb = new ArrayList<Point>();
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertY(-9)));
+        garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertY(-7)));
+        garb.add(new Point((int)RobotData.convertY(1),(int)RobotData.convertY(-5)));
+        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-6)));
+        garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertY(-2)));
+        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-1)));
 
-    	
-    	RobotData.INSTANCE.setGarbage(garb);
+        
+        RobotData.INSTANCE.setGarbage(garb);
     }
 	
     private static double transformX (int X){
@@ -374,12 +377,12 @@ public class PathPlanner {
 	}
 	
     public void goToPenultimate(Point target) {
-		mapArray = RobotData.INSTANCE.getMap();
-        ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
-        ArrayList<Point> straight = straightLines(path);
-        executePath(straight, true);
-        
-    }
+        mapArray = RobotData.INSTANCE.getMap();
+ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+ArrayList<Point> straight = straightLines(path);
+executePath(straight, true);
+
+}
 	public int getDirection(Point p, Point q){
 		if(p.x == q.x && p.y+1 == q.y)
 			return 0;
