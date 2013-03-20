@@ -45,6 +45,7 @@ public class WallFollower{
     static double startY;
     static double startYaw;
     static long startTime;
+    static boolean owDone = false;
     
 
     static int[][] map = RobotData.INSTANCE.getMap();
@@ -356,7 +357,7 @@ public class WallFollower{
     	for(int k = i-5;k<=i+5;k++)
     		for(int p = j-5;p<=j+5;p++)
     			if(k!= i || p != j)
-    				if(map[k][p] == 2 || map[k][p] == 6)
+    				if(map[k][p] == 2 || map[k][p] == 5)
     					b= false;
     	return b;
     }

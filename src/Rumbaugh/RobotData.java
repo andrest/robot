@@ -203,13 +203,19 @@ public enum RobotData {
                                 color = Color.BLUE.getRGB();
                                 break;
                         case 3:
-                                color = Color.GRAY.getRGB();
+                                color = Color.GREEN.getRGB();
                                 break;
                         case 4:
                                 color = Color.YELLOW.getRGB();
                                 break;
-                        case 6:
+                        case 5:
                         		color = Color.BLUE.getRGB();
+                        		break;
+                        case 6: 
+                        		color = Color.LIGHT_GRAY.getRGB();
+                        		break;
+                        case 7:
+                        		color = Color.GRAY.getRGB();
                         		break;
                         case 9: 
                         		color = Color.BLACK.getRGB();
