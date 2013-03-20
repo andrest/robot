@@ -54,7 +54,7 @@ public class PathPlanner {
         for(int i=0;i<path.size();i++){
                 System.out.println(path.get(i));
         }
-        executePath(straight,false);
+        executePath(path,false);
                 
                 //return when it gets to the point
         }
@@ -88,7 +88,7 @@ public class PathPlanner {
                 for(int i = 1; i < nodes.size(); i++) {
                         int j = i+1;
                         Point currentNode = nodes.get(i);
-                        Point2D.Double newPoint = new Point2D.Double(transformX(currentNode.y), transformY(currentNode.x));
+                        Point2D.Double newPoint = new Point2D.Double(transformX(currentNode.getY()), transformY(currentNode.getX()));
                         // skip to next if same point is already in the path
                         if (points.contains(newPoint)) continue;
                         points.add(newPoint);
@@ -183,10 +183,10 @@ public class PathPlanner {
         RobotData.INSTANCE.setGarbage(garb);
     }
         
-    private static double transformX (int X){
+    private static double transformX (double X){
         return ((X/ RobotData.RESOLUTION) -RobotData.LENGTH_OFFSET);
     }
-    private static double transformY (int Y){
+    private static double transformY (double Y){
         return ((RobotData.ARRAY_HEIGHT - Y)/RobotData.RESOLUTION) - RobotData.HEIGHT_OFFSET;
     }
         
@@ -295,26 +295,26 @@ public class PathPlanner {
                 int k = Integer.parseInt(str.split(" ")[2]);
         for(int alfa = i-1; alfa<= i+1; alfa++)
             for(int beta = j-1; beta<=j+1;beta++){
-                                if(mapArray[alfa][beta] != 1 && mapArray[alfa][beta] != 0 && mapArray[alfa][beta] != 9 &&(alfa != i || beta != j)){
+                                if((mapArray[alfa][beta] == 3 || mapArray[alfa][beta] == 6 || mapArray[alfa][beta] == 7) &&(alfa != i || beta != j)){
                                         if((alfa+beta)%2 != (i+j)%2){
                                                 neighbors.add(alfa + " " + beta+ " " + ((mapArray[alfa][beta]*20)+10+k + getH(alfa+" " + beta, tar)));
                                         }
                                         else{
                                                 if((alfa == i-1) && (beta == j-1) && 
-                                                        mapArray[i-1][j] != 1 && mapArray[i-1][j] != 0 && mapArray[i-1][j] != 9 && 
-                                                        mapArray[i][j-1] != 1 && mapArray[i][j-1] != 0 && mapArray[i][j-1] != 9 )
+                                                        (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7)&&
+                                                        (mapArray[i][j-1] != 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
                                                         neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
                                                 else if((alfa == i-1) && (beta == j+1) && 
-                                                                mapArray[i-1][j] != 1 && mapArray[i-1][j] != 0 && mapArray[i-1][j] != 9 && 
-                                                                mapArray[i][j+1] != 1 && mapArray[i][j+1] != 0 && mapArray[i][j+1] != 9)
+                                                                (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7) && 
+                                                                (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
                                                                 neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
                                                         else if((alfa == i+1) && (beta == j-1) && 
-                                                                        mapArray[i][j-1] != 1 && mapArray[i][j-1] != 0 && mapArray[i][j-1] != 9 &&
-                                                                        mapArray[i+1][j] != 1 && mapArray[i+1][j] != 0 && mapArray[i+1][j] != 9)
+                                                                        (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7) &&
+                                                                        (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 || mapArray[i+1][j] == 7))
                                                                         neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
                                                                 else if((alfa == i+1) && (beta == j+1) && 
-                                                                                mapArray[i+1][j] != 1 && mapArray[i+1][j] != 0 &&  mapArray[i+1][j] != 9 &&
-                                                                                mapArray[i][j+1] != 1 && mapArray[i][j+1] != 0 && mapArray[i][j+1] != 9)
+                                                                                (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 ||  mapArray[i+1][j] == 7) &&
+                                                                                (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
                                                                                 neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
                                         }
                                 }

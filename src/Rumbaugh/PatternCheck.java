@@ -32,18 +32,18 @@ static void patternCorrect(int[][] a){
     						if(a[k][p] == 1)
     							a[i][j] = 9; 
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j] != 5)
-    				for(int k=i-2;k<= i+2;k++)
-    					for(int p = j-2;p<= j+2;p++)
+    				for(int k=i-3;k<= i+3;k++)
+    					for(int p = j-3;p<= j+3;p++)
     						if(a[k][p] == 9)
     							a[i][j] = 8;
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j]!= 8 && a[i][j] != 5)
-    				for(int k=i-3;k<= i+3;k++)
-    					for(int p = j-3;p<= j+3;p++)
+    				for(int k=i-1;k<= i+1;k++)
+    					for(int p = j-2;p<= j+2;p++)
     						if(a[k][p] == 8)
     							a[i][j] = 7;
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j]!= 8 && a[i][j] != 5 && a[i][j] != 7)
-    				for(int k=i-3;k<= i+3;k++)
-    					for(int p = j-3;p<= j+3;p++)
+    				for(int k=i-1;k<= i+1;k++)
+    					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 7)
     							a[i][j] = 6;
     			
