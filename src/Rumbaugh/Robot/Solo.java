@@ -63,21 +63,21 @@ public class Solo {
                         System.exit(1);
                 }
                 robot.runThreaded(-1, -1);
-                pathPlanner = new PathPlanner(pos2d_0, sonar_0);
+                //pathPlanner = new PathPlanner(pos2d_0, sonar_0);
         }
         public void startMapping(){
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
-                //try {PathPlanner.testMap();} catch (IOException e) {}
-                //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pathPlanner, new Point(0,0), new Point(0,0));		
-    			//garbageCollector.startCollection();
-                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                WallFollower.map();
+                try {PathPlanner.testMap();} catch (IOException e) {}
+                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));		
+    			garbageCollector.startCollection();
+                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                //WallFollower.map();
         }
 
 		public void collectGarbage(double x1, double y1, double x2, double y2) {
-			GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pathPlanner, new Point((int)x1,(int)y1), new Point((int)x2,(int)y2));		
+			GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point((int)x1,(int)y1), new Point((int)x2,(int)y2));		
 			garbageCollector.startCollection();
 			System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
 		}

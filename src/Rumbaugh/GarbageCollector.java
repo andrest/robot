@@ -1,26 +1,35 @@
 package Rumbaugh;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javaclient3.GripperInterface;
 import javaclient3.Position2DInterface;
+import javaclient3.RangerInterface;
 
 public class GarbageCollector {
 	private PathPlanner pathPlanner;
 	private ArrayList<Point> garbages;
 	private Point designated;
+    private Position2DInterface pos2d;
+    private RangerInterface ranger;
 	
 
-	public GarbageCollector(GripperInterface gripper_0, PathPlanner pathPlanner, Point designatedA, Point designatedB) {
+	public GarbageCollector(GripperInterface gripper_0, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) {
 		this.pathPlanner = pathPlanner;
+		this.pos2d = pos2d;
+		this.ranger = ranger;
 		setDesignated(designatedA, designatedB);
 	}
 
 	public void startCollection() {
 		garbages = RobotData.INSTANCE.getGarbage();
 		for (Point garbage : garbages) {
+			pathPlanner = new PathPlanner(pos2d, ranger);
+			try {PathPlanner.testMap();} catch (IOException e) {};
 			fetchGarbage(garbage);
+			
 			System.out.println("Garbage fetched");
 			//System.out.println(RobotData.INSTANCE.getLocation());
 			//disposeGarbage(garbage);
