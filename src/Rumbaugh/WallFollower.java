@@ -114,9 +114,9 @@ public class WallFollower{
     	
         int x = RobotData.INSTANCE.getLocation().x;
         int y = RobotData.INSTANCE.getLocation().y;
-    	String coor = PatternCheck.getClosestUnexplored(x, y, map);
-    	int tarX = Integer.parseInt(coor.split(" ")[0]);
-    	int tarY = Integer.parseInt(coor.split(" ")[1]);
+    	Point coor = PatternCheck.getClosestUnexplored(x, y, map,0);
+    	int tarX = coor.x;
+    	int tarY = coor.y;
     	//path planning, going to unexplored
    // 	pathPlanner = new PathPlanner(posi, rngi, map);
     	map[tarX][tarY] = 3;
@@ -177,7 +177,6 @@ public class WallFollower{
                 // back up a little bit if we're bumping in front
                 xSpeed   = -0.10f;
                 yawSpeed = - DEF_YAW_SPEED * 3;
-                System.out.println("here");
             } else
             	if(sonarValues[3] > 2.0){
             		turnLeft(posi);
@@ -221,8 +220,8 @@ public class WallFollower{
             for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
             	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
             varMap[i][j]= map[i][j];
-            if(iterator%30== 0){
-            	if(iterator == 30){
+            if(iterator%10== 0){
+            	if(iterator == 10){
                 	for(int i= 0;i<RobotData.ARRAY_HEIGHT; i++)
                 		for(int j= 0;j<RobotData.ARRAY_LENGTH; j++){
                 			if(map[i][j] == 1)
@@ -249,9 +248,10 @@ public class WallFollower{
         wallBoolean = false;
         int x = RobotData.INSTANCE.getLocation().x;
         int y = RobotData.INSTANCE.getLocation().y;
-        if(map[x][y] == 1){
-        	x= neighbour(new Point(x,y)).x;
-        	y= neighbour(new Point(x,y)).y;
+        if(map[x][y] != 3 && map[x][y] != 0){
+        	Point p = PatternCheck.getClosestUnexplored(x, y, map, 3);
+        	x= p.x;
+        	y= p.y;
         }
         posi.setSpeed(0, 0);
         if(PatternCheck.outerWallDone(varMap,x,y)){
@@ -504,7 +504,7 @@ public class WallFollower{
     	Point q = null;
     	for(int i= p.x-1;i<= p.x+1;i++)
     		for(int j= p.y-1; j<=p.y+1;j++)
-    			if(map[i][j] == 3 || map[i][j] == 9 || map[i][j] == 0)
+    			if(map[i][j] == 3 || map[i][j] == 8 || map[i][j] == 0 || map[i][j] == 7)
     				q= new Point(i,j);
     	return q;
     }

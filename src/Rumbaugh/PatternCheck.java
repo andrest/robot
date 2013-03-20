@@ -1,5 +1,6 @@
 package Rumbaugh;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -27,13 +28,13 @@ static void patternCorrect(int[][] a){
     				a[i+1][j]=9;
     			
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] !=5)
-    				for(int k=i-1;k<= i+1;k++)
-    					for(int p = j-1;p<= j+1;p++)
+    				for(int k=i-2;k<= i+2;k++)
+    					for(int p = j-2;p<= j+2;p++)
     						if(a[k][p] == 1)
     							a[i][j] = 9; 
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j] != 5)
-    				for(int k=i-2;k<= i+2;k++)
-    					for(int p = j-2;p<= j+2;p++)
+    				for(int k=i-1;k<= i+1;k++)
+    					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 9)
     							a[i][j] = 8;
     			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j]!= 8 && a[i][j] != 5)
@@ -106,21 +107,21 @@ public static void floodFill(int x, int y, int[][] array) {
 	int w,e;
 	while(!queue.isEmpty()){
 		s = queue.remove();
-		if(s.startsWith("0") || s.startsWith("3") || s.startsWith("7")){
+		if(s.startsWith("0") || s.startsWith("3")){
 			x=Integer.parseInt(s.split(" ")[1]);
 			y=Integer.parseInt(s.split(" ")[2]);
 			w=y;
 			e=y;
 			boolean b= true;
 			while(w>0 && b){
-				if(array[x][w-1] == 0 || array[x][w-1] == 3 || array[x][w-1] == 7)
+				if(array[x][w-1] == 0 || array[x][w-1] == 3)
 					w--;
 				else
 					b=false;
 			}
 			b= true;
 				while(e<RobotData.ARRAY_LENGTH-1 && b)
-					if(array[x][e+1] == 0 || array[x][e+1] == 3|| array[x][e+1] == 7)
+					if(array[x][e+1] == 0 || array[x][e+1] == 3)
 						e++;
 					else 
 						b= false;
@@ -128,10 +129,10 @@ public static void floodFill(int x, int y, int[][] array) {
 			for(int j= w;j<=e;j++){
 				array[x][j]= 8;
 				if(x>0)
-					if(array[x-1][j] == 0 || array[x-1][j] == 3 || array[x-1][j] == 7)
+					if(array[x-1][j] == 0 || array[x-1][j] == 3)
 						queue.add(array[x-1][j] + " " + (x-1) +" "+ j);
 				if(x<RobotData.ARRAY_HEIGHT - 1)
-					if(array[x+1][j] == 0 || array[x+1][j] == 3 || array[x+1][j] == 7)
+					if(array[x+1][j] == 0 || array[x+1][j] == 3)
 						queue.add(array[x+1][j] + " " + (x+1) + " " + j);
 			}
 		}
@@ -209,17 +210,17 @@ public static boolean outerWallDone(int[][] array, int x, int y){
 	else return false;
 }
 
-public static String getClosestUnexplored(int x, int y, int[][] map){
+public static Point getClosestUnexplored(int x, int y, int[][] map, int target){
 	double distance;
 	double prev = 1000;
-	String coordinates = null;
+	Point coordinates =null;
 	for(int i=0;i<map.length;i++)
 		for(int j=0;j<map[0].length;j++)
-			if(map[i][j] == 0 && (i!= x || j!= y)){
+			if(map[i][j] == target && (i!= x || j!= y)){
 				distance = Math.sqrt(((i - x)* (i - x)) + ((j - y)* (j - y)));
 				if(distance < prev){
 					prev = distance;
-					coordinates = i + " " +  j;
+					coordinates = new Point(i,j);
 				}
 			}
 	return coordinates;
