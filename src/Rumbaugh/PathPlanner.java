@@ -303,19 +303,19 @@ public class PathPlanner {
                                                 if((alfa == i-1) && (beta == j-1) && 
                                                         (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7)&&
                                                         (mapArray[i][j-1] != 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
-                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
+                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
                                                 else if((alfa == i-1) && (beta == j+1) && 
                                                                 (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7) && 
                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
+                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
                                                         else if((alfa == i+1) && (beta == j-1) && 
                                                                         (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7) &&
                                                                         (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 || mapArray[i+1][j] == 7))
-                                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
+                                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
                                                                 else if((alfa == i+1) && (beta == j+1) && 
                                                                                 (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 ||  mapArray[i+1][j] == 7) &&
                                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*20)+14+k + getH(alfa+" " + beta, tar)));
+                                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
                                         }
                                 }
                                 

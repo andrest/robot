@@ -264,12 +264,18 @@ public class WallFollower{
         		break;
         	}
         }
+        
         else
         	System.out.print("Inner");
         int[][] map = RobotData.INSTANCE.getMap();
     	for(int i= 0;i<map.length; i++) {
-    		for(int j= 0;j<map[i].length; j++)
+    		for(int j= 0;j<map[i].length; j++){
     			System.out.print(map[i][j] + " ");
+//    			varMap[i][j] = map[i][j];
+//    			if(varMap[i][j] == 0 && (varMap[i][j+1] == 3 || map[i][j-1] == 3))
+//    				if(PatternCheck.UnexploredFloodFill(i, j, varMap) < 15)
+//    					PatternCheck.UnexploredFloodFill(i, j, WallFollower.map);
+    		}
     		System.out.println();
     	}
         posi.setSpeed(0, 0);
