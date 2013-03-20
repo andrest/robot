@@ -18,7 +18,6 @@ public class MainApp {
         public static void main(String [] args){
                 
         if(args.length > 0){
-        	System.out.println("asd");
                 List<String> arguments = Arrays.asList(args);
                 
                 if(arguments.contains("-gui")) {
