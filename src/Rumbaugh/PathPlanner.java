@@ -53,7 +53,7 @@ public class PathPlanner {
     	for(int i=0;i<path.size();i++){
     		System.out.println(path.get(i));
     	}
-    	executePath(straight);
+    	executePath(straight,false);
 		
 		//return when it gets to the point
 	}
@@ -63,13 +63,38 @@ public class PathPlanner {
 		return reconstructPath();
 	}
 	
-	public void executePath(ArrayList<Point> nodes) {
+	public static double getAngle(double a,double b,double c, double d){
+		if((a>=c&&b>=d)||(a>=c&&b<=d))
+			return Math.asin((d-b)/
+	        		Math.sqrt(Math.pow((a-c),2)+
+	        				Math.pow((b-d), 2)));
+			else if(a<c&&b<=d)
+				
+				return Math.toRadians(90.0)+Math.acos((b-d)/
+		        		Math.sqrt(Math.pow((a-c),2)+
+		        				Math.pow((b-d), 2)));
+			else return -Math.toRadians(90.0)+Math.asin((a-c)/
+	        		Math.sqrt(Math.pow((a-c),2)+
+	        				Math.pow((b-d), 2)));
+	}
+	
+	public void executePath(ArrayList<Point> nodes, boolean skipLast) {
 		int i=1;
-		for(int j=0;j<nodes.size();j++)
-			mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
+		//for(int j=0;j<nodes.size();j++)
+			//mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
+		double yaw;
 		while(i<nodes.size()){
+			int j = i+1;
 			
-			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), Math.PI/2);
+			if (j < nodes.size()) {
+				Point nextNode = nodes.get(j);
+				Point currentNode = nodes.get(i);
+				int x = nextNode.x - currentNode.x;
+				int y = nextNode.y - currentNode.y;
+				yaw = getAngle(nextNode.y, nextNode.x, currentNode.y, currentNode.x);
+			} else yaw = 0;
+			
+			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), yaw);
 			pos2d.setPosition( pp2d, new PlayerPose2d(1, 1, 1), 0);
 			System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
 			boolean b= true;
@@ -88,8 +113,9 @@ public class PathPlanner {
 	
 				}
 			}
+			// skip the last node
+			if (i == nodes.size()-2 && skipLast == true) break;
 			i++;
-			
 		}
 		System.out.println("Done");
 			
@@ -127,12 +153,12 @@ public class PathPlanner {
     	
     	ArrayList<Point> garb = new ArrayList<Point>();
     	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
-    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertY(-8)));
-    	garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertY(-7)));
-    	garb.add(new Point((int)RobotData.convertY(1),(int)RobotData.convertY(-5)));
-    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-6)));
-    	garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertY(-2)));
-    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertY(-1)));
+    	garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
+    	garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
+    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
+    	garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
+    	garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(-2)));
+    	//garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
 
     	
     	RobotData.INSTANCE.setGarbage(garb);
@@ -329,17 +355,12 @@ public class PathPlanner {
 	}
 	
     public void goToPenultimate(Point target) {
-        while (!pos2d.isDataReady());
-        Point startPoint = new Point(RobotData.INSTANCE.getLocation());
-        System.out.println("Going from " + startPoint + " to " + target);
-        mapArray = RobotData.INSTANCE.getMap();
+		mapArray = RobotData.INSTANCE.getMap();
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
         ArrayList<Point> straight = straightLines(path);
-        // remove the last node
-        straight.remove(straight.size()-1);
-        executePath(straight);
+        executePath(straight, true);
         
-}
+    }
 	public int getDirection(Point p, Point q){
 		if(p.x == q.x && p.y+1 == q.y)
 			return 0;

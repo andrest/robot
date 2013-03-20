@@ -70,7 +70,6 @@ public class Solo {
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
                 //try {PathPlanner.testMap();} catch (IOException e) {}
-                //pathPlanner.goToPoint(new Point(66,85));
                 //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pathPlanner, new Point(0,0), new Point(0,0));		
     			//garbageCollector.startCollection();
                 WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0, pathPlanner);
