@@ -1,6 +1,7 @@
 package Rumbaugh;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -79,26 +80,45 @@ public class PathPlanner {
 	}
 	
 	public void executePath(ArrayList<Point> nodes, boolean skipLast) {
-		int i=1;
 		//for(int j=0;j<nodes.size();j++)
 			//mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
 		double yaw;
-		while(i<nodes.size()){
+		ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
+		ArrayList<PlayerPose2d> posePath = new ArrayList<PlayerPose2d>();
+		for(int i = 1; i < nodes.size(); i++) {
 			int j = i+1;
-			
+			Point currentNode = nodes.get(i);
+			Point2D.Double newPoint = new Point2D.Double(transformX(currentNode.y), transformY(currentNode.x));
+			// skip to next if same point is already in the path
+			if (points.contains(newPoint)) continue;
+			points.add(newPoint);
+			// if it's the last node yaw = 0
 			if (j < nodes.size()) {
 				Point nextNode = nodes.get(j);
-				Point currentNode = nodes.get(i);
+				
 				int x = nextNode.x - currentNode.x;
 				int y = nextNode.y - currentNode.y;
 				yaw = getAngle(nextNode.y, nextNode.x, currentNode.y, currentNode.x);
 			} else yaw = 0;
+
+			posePath.add(new PlayerPose2d(newPoint.x, newPoint.y, yaw));
 			
-			PlayerPose2d pp2d = new PlayerPose2d(transformX(nodes.get(i).y), transformY(nodes.get(i).x), yaw);
+			
+		}
+		System.out.println(posePath);
+		// execute the posePath
+		for(int i = 0; i < posePath.size(); i++) {
+			PlayerPose2d pp2d = posePath.get(i);
+			// if there's only one node in the path just align and current coordinate
+			if(posePath.size() == 1 && skipLast == true) {
+				while(!pos2d.isDataReady()) {};
+				pos2d.setPosition(new PlayerPose2d(pos2d.getX(), pos2d.getY(), pp2d.getPa()), new PlayerPose2d(1, 1, 1), 0);
+				break;
+			}
 			pos2d.setPosition( pp2d, new PlayerPose2d(1, 1, 1), 0);
+			
 			System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
 			boolean b= true;
-			System.out.println(i);
 			while(b){
 				while(!rngi.isDataReady());
 				double[] sonars = rngi.getData().getRanges();
@@ -114,8 +134,7 @@ public class PathPlanner {
 				}
 			}
 			// skip the last node
-			if (i == nodes.size()-2 && skipLast == true) break;
-			i++;
+			if (i == posePath.size()-2 && skipLast == true) break;
 		}
 		System.out.println("Done");
 			
