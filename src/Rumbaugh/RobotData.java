@@ -194,7 +194,7 @@ public enum RobotData {
                 int color;
                 switch (map[y][x]) {
                         case 0:
-                                color = Color.WHITE.getRGB();
+                                color = Color.BLACK.getRGB();
                                 break;
                         case 1:
                                 color = Color.BLACK.getRGB();
@@ -203,7 +203,7 @@ public enum RobotData {
                                 color = Color.BLUE.getRGB();
                                 break;
                         case 3:
-                                color = Color.GREEN.getRGB();
+                                color = Color.LIGHT_GRAY.getRGB();
                                 break;
                         case 4:
                                 color = Color.YELLOW.getRGB();
@@ -212,14 +212,17 @@ public enum RobotData {
                         		color = Color.BLUE.getRGB();
                         		break;
                         case 6: 
-                        		color = Color.LIGHT_GRAY.getRGB();
-                        		break;
-                        case 7:
                         		color = Color.GRAY.getRGB();
                         		break;
-                        case 9: 
-                        		color = Color.BLACK.getRGB();
+                        case 7:
+                        		color = Color.GRAY.darker().getRGB();
                         		break;
+                        case 9: 
+                        		color = Color.GRAY.darker().darker().darker().getRGB();
+                        		break;
+                        case 10:
+                        	color = Color.RED.getRGB();
+                        	break;
                         default:
                                 color = Color.DARK_GRAY.getRGB();
                                 break;
