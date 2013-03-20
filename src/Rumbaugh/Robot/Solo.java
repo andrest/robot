@@ -69,11 +69,11 @@ public class Solo {
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
-                //try {PathPlanner.testMap();} catch (IOException e) {}
-              //  GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
-            //            garbageCollector.startCollection();
-                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                WallFollower.map();
+                {PathPlanner.testMap();} catch (IOException e) {}
+                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
+                garbageCollector.startCollection();
+                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                //WallFollower.map();
         }
 
                 public void collectGarbage(double x1, double y1, double x2, double y2) {
