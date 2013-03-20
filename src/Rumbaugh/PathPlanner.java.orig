@@ -129,6 +129,8 @@ public class PathPlanner {
 	        				Math.pow((b-d), 2)));
 	}
 	
+<<<<<<< HEAD
+=======
 	public void executePath(ArrayList<Point> nodes, boolean skipLast) {
 		//for(int j=0;j<nodes.size();j++)
 			//mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
@@ -196,6 +198,7 @@ public class PathPlanner {
         return new Point((int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET + pos2d.getY())),
         				 (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+pos2d.getX())));
     }
+>>>>>>> master
     public static String[][] mapFromFile(String filename) throws IOException {
         FileReader fileReader = new FileReader(filename);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
