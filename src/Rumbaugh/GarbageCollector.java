@@ -9,15 +9,15 @@ import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 
 public class GarbageCollector {
-        private PathPlanner pathPlanner;
-        private ArrayList<Point> garbages;
-        private Point designated;
+    private PathPlanner pathPlanner;
+    private ArrayList<Point> garbages;
+    private Point designated;
     private Position2DInterface pos2d;
     private RangerInterface ranger;
-        
+    
 
-        public GarbageCollector(GripperInterface gripper_0, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) {
-                this.pathPlanner = pathPlanner;
+        public GarbageCollector(GripperInterface gripper, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) {
+                
                 this.pos2d = pos2d;
                 this.ranger = ranger;
                 setDesignated(designatedA, designatedB);

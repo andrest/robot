@@ -32,6 +32,7 @@ public class PathPlanner {
         String current;                                                                                         //current node
         String target;                                                                                          //target node
         static int[][] array = null;
+        private Boolean stop = false;
 
         Position2DInterface pos2d;
         RangerInterface rngi;
@@ -80,7 +81,7 @@ public class PathPlanner {
         }
         
         public void executePath(ArrayList<Point> nodes, boolean skipLast) {
-
+        		stop = false;
                 double yaw;
                 ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
                 ArrayList<PlayerPose2d> posePath = new ArrayList<PlayerPose2d>();
@@ -118,7 +119,7 @@ public class PathPlanner {
                         
                         System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
                         boolean b= true;
-                        while(b){
+                        while(b && stop == false){
                                 while(!rngi.isDataReady());
                                 double[] sonars = rngi.getData().getRanges();
                                 double min = sonars[0];
@@ -378,8 +379,67 @@ public class PathPlanner {
         for(int j=0;j<path.size();j++)
             mapArray[path.get(j).x][path.get(j).y] = 4;
         ArrayList<Point> straight = straightLines(path);
-        executePath(straight, true);
+        Thread worker = new Thread(new StopAtPickup(target));
+        worker.start();
+        executePath(straight, false);
+        try {
+			worker.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
+    }
+    static private double getDistance(double ax, double ay, double bx, double by) {
+    	return Math.sqrt(Math.pow((ax-bx), 2) + Math.pow((ay - by), 2));
+    }
+    public class StopAtPickup implements Runnable{
+    	Point garbage; 
+    	private volatile boolean cancelled;
+    	
+    	public StopAtPickup(Point garbage) {
+    		this.garbage = garbage;
+    		cancelled = false;
+    	}
+    	
+	   public void run() {
+		  stop = false;
+		  double gy = transformY(garbage.getX());
+     	  double gx = transformX(garbage.getY());
+	      while (!cancelled) {
+	    	  
+	         while(!pos2d.isDataReady()){};
+        	 double x = pos2d.getX();
+        	 double y = pos2d.getY();
+        	 System.out.println("Distance: " +getDistance(x, y, gx, gy));
+        	 if (getDistance(x, y, gx, gy) <= 0.6) {
+        		 pos2d.setSpeed(0, 0);
+        		 x = pos2d.getX();
+	        	 y = pos2d.getY();
+        		 Point bot = RobotData.INSTANCE.getLocation();
+        		 // turn to face the target at the same location
+        		 //double yaw = getAngle(garbage.getY(), garbage.getX(), bot.x, bot.y);
+        		 double yaw = getAngle(gx, gy, x, y);
+        		 stop = true;
+        		 cancelled = true;
+        		 pos2d.setPosition(new PlayerPose2d(x, y, yaw), new PlayerPose2d(1, 1, 1), 0);
+        		 try { Thread.sleep(1000);} catch (Exception e) {}
+        		 pos2d.setSpeed(0, 0);
+        		 System.out.println("should be between grippers!");
+        	 }
+	         
+	         try { Thread.sleep(50);} catch (Exception e) {}
+	      }
+	   }
+
+	   public void cancel()
+	   {
+	      cancelled = true;  
+	   }
+
+	   public boolean isCancelled() {
+	      return cancelled;
+	   }
     }
         public int getDirection(Point p, Point q){
                 if(p.x == q.x && p.y+1 == q.y)

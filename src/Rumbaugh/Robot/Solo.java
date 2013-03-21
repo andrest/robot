@@ -72,50 +72,51 @@ public class Solo {
         }
         
         public void crashRobots() {
-        //int i;
-        for (int i = 1; i <= 2; i++)	{
-	        try{
-	        		final PlayerClient robot = new PlayerClient(SERVER_NAME, PORT_NUMBER);
-	        		final Position2DInterface  pos2d = robot.requestInterfacePosition2D(i, PLAYER_OPEN_MODE);
-	    	        robot.runThreaded(-1, -1);
-	    	        pos2d.setSpeed(-1, 0);
-
-	    	        Thread thread = new Thread(){
-	    	        	public void run() {
-	    	        		while(true){
-	    	        			try { Thread.sleep(500);} catch (Exception e) {}
-		    	    	        while(!pos2d.isDataReady());
-		    	    	        //System.out.println(pos2d.getData().getStall());
-		    	    	        if(pos2d.getData().getStall() == 1) {
-		    	    	        	pos2d.setSpeed(0, 0);
-		    	    	        	return;
-		    	    	        }
-		    	    	        
-	    	        		}
-	    	            }
-	    	        };
-	    	        thread.run();
-	        } catch(PlayerException exception){
-                System.out.println(exception);
-                System.exit(1);
-	        }
-	    	
+        	//Thread worker = new Thread();
+		    for (int i = 1; i <= 2; i++)	{
+		        try{
+		        		final PlayerClient robot = new PlayerClient(SERVER_NAME, PORT_NUMBER);
+		        		final Position2DInterface  pos2d = robot.requestInterfacePosition2D(i, PLAYER_OPEN_MODE);
+		    	        robot.runThreaded(-1, -1);
+		    	        pos2d.setSpeed(-1, 0);
+		
+		    	        Runnable crashRobot = new Runnable(){	
+		    	        	public void run() {
+		    	        		long timeStarted = System.currentTimeMillis();
+		    	        		while(true){
+		    	        			try { Thread.sleep(500);} catch (Exception e) {}
+			    	    	        while(!pos2d.isDataReady());
+			    	    	        System.out.println(System.nanoTime());
+			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 5000 > System.currentTimeMillis())) {
+			    	    	        	pos2d.setSpeed(0, 0);
+			    	    	        	return;
+			    	    	        }
+			    	    	        
+		    	        		}
+		    	            }
+		    	        };
+		    	        Thread worker = new Thread(crashRobot);
+		    	        worker.start();
+		        } catch(PlayerException exception){
+		            System.out.println(exception);
+		            System.exit(1);
+		        }
 	        }
         }
         public void startMapping(){
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
-                /*try {
+                try {
 					PathPlanner.testMap();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}*/
-                //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
-                //garbageCollector.startCollection();
-                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                WallFollower.map();
+				}
+                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
+                garbageCollector.startCollection();
+                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                //WallFollower.map();
         }
 
                 public void collectGarbage(double x1, double y1, double x2, double y2) {
