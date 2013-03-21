@@ -271,8 +271,8 @@ public class WallFollower{
     	for(int i= 0;i<RobotData.INSTANCE.getMap().length; i++) 
     		for(int j= 0;j<RobotData.INSTANCE.getMap()[i].length; j++){
         			testmap[i][j] = RobotData.INSTANCE.getMap()[i][j];}
-    	for(int i= 0;i<RobotData.INSTANCE.getMap().length; i++) 
-    		for(int j= 0;j<RobotData.INSTANCE.getMap()[i].length; j++){
+    	for(int i= 2;i<RobotData.INSTANCE.getMap().length-2; i++) 
+    		for(int j= 2;j<RobotData.INSTANCE.getMap()[i].length-2; j++){
         			if(testmap[i][j] == 0 && (testmap[i][j+1] == 3 || testmap[i][j-1] == 3))
     				if(PatternCheck.UnexploredFloodFill(i, j, testmap) < 20){
     					System.out.println(true);
@@ -329,7 +329,7 @@ public class WallFollower{
     
     static void getSonars (RangerInterface rngi) {
         while (!rngi.isDataReady ());
-        sonarValues = rngi.getData ().getRanges ();
+         while((sonarValues = rngi.getData ().getRanges ()) == null);
         
         for (int i = 0; i < rngi.getData ().getRanges_count (); i++)
             if (sonarValues[i] < SONAR_MIN_VALUE)
@@ -337,7 +337,7 @@ public class WallFollower{
             else
                 if (sonarValues[i] > SONAR_MAX_VALUE)
                     sonarValues[i] = SONAR_MAX_VALUE;
-    
+        
         leftSide = Math.min (sonarValues[3], sonarValues [4]);
         frontSide = Math.min (Math.min(sonarValues [0], sonarValues [1]), sonarValues[2]);
     }

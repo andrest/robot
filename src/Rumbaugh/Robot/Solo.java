@@ -67,7 +67,12 @@ public class Solo {
                         System.out.println(exception);
                         System.exit(1);
                 }
+
                 robot.runThreaded(-1, -1); 
+    	        //robot.requestDataDeliveryMode(PlayerClient.PLAYER_DATAMODE_PULL);
+    	        //robot.
+                //while(!gripper_0.isGeomReady()) {System.out.println("stuck");};
+                //gripper_0.getGeom().setCapacity((byte)10);
                 //pathPlanner = new PathPlanner(pos2d_0, sonar_0);
         }
         
@@ -78,7 +83,7 @@ public class Solo {
 		        		final PlayerClient robot = new PlayerClient(SERVER_NAME, PORT_NUMBER);
 		        		final Position2DInterface  pos2d = robot.requestInterfacePosition2D(i, PLAYER_OPEN_MODE);
 		    	        robot.runThreaded(-1, -1);
-		    	        pos2d.setSpeed(-1, 0);
+		    	        pos2d.setSpeed(1, 0);
 		
 		    	        Runnable crashRobot = new Runnable(){	
 		    	        	public void run() {
@@ -86,7 +91,7 @@ public class Solo {
 		    	        		while(true){
 		    	        			try { Thread.sleep(500);} catch (Exception e) {}
 			    	    	        while(!pos2d.isDataReady());
-			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 5000 < System.currentTimeMillis()) {
+			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 15000 < System.currentTimeMillis()) {
 			    	    	        	pos2d.setSpeed(0, 0);
 			    	    	        	return;
 			    	    	        }
@@ -105,17 +110,17 @@ public class Solo {
         public void startMapping(){
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
-                
+                /*
                 try {
 					PathPlanner.testMap();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(140,140), new Point(140,140));          
-                garbageCollector.startCollection();
-                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                //WallFollower.map();
+				}*/
+                //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(140,140), new Point(140,140));          
+                //garbageCollector.startCollection();
+                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                WallFollower.map();
         }
 
                 public void collectGarbage(double x1, double y1, double x2, double y2) {

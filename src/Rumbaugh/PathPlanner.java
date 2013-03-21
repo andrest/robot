@@ -165,7 +165,7 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-        String[][] mapArray = mapFromFile("testmap2.txt");
+        String[][] mapArray = mapFromFile("testmap3.txt");
         int h = mapArray.length;
         int l = mapArray[0].length;
         int[][] arr = new int[h][l];
@@ -419,7 +419,7 @@ public class PathPlanner {
         	 double x = pos2d.getX();
         	 double y = pos2d.getY();
         	 System.out.println("Distance: " +getDistance(x, y, gx, gy));
-        	 if (getDistance(x, y, gx, gy) <= 0.4) {
+        	 if (getDistance(x, y, gx, gy) <= 0.55) {
         		 pos2d.setSpeed(0, 0);
         		 while(!pos2d.isDataReady()){};
         		 x = pos2d.getX();

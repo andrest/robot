@@ -52,7 +52,7 @@ static void patternCorrect(int[][] a){
     			if(a[i][j] == 1 || a[i][j] ==9)
 				for(int k=i-1;k<= i+1;k++)
 					for(int p = j-1;p<= j+1;p++)
-						if(a[j][p] == 5)
+						if(a[k][p] == 5)
 							a[i][j] = 8;
     			if(a[i][j] == 2){
     				for(int k=i-1;k<= i+1;k++)
