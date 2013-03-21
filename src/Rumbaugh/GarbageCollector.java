@@ -14,12 +14,14 @@ public class GarbageCollector {
     private Point designated;
     private Position2DInterface pos2d;
     private RangerInterface ranger;
+	private GripperInterface gripper;
     
 
         public GarbageCollector(GripperInterface gripper, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) {
                 
                 this.pos2d = pos2d;
                 this.ranger = ranger;
+                this.gripper = gripper;
                 setDesignated(designatedA, designatedB);
         }
 
@@ -31,6 +33,8 @@ public class GarbageCollector {
                         fetchGarbage(garbage);
                         
                         System.out.println("Garbage fetched");
+                        while(!gripper.isDataReady()){};
+                        System.out.println(gripper.getData().getBeams());
                         //System.out.println(RobotData.INSTANCE.getLocation());
                         //disposeGarbage(garbage);
                 }
