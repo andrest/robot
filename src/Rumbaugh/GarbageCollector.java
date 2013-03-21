@@ -17,12 +17,23 @@ public class GarbageCollector {
 	private GripperInterface gripper;
     
 
-        public GarbageCollector(GripperInterface gripper, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) {
-                
-                this.pos2d = pos2d;
-                this.ranger = ranger;
-                this.gripper = gripper;
-                setDesignated(designatedA, designatedB);
+        public GarbageCollector(GripperInterface gripper, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) { 
+        	try {PathPlanner.testMap();} catch (IOException e) {};
+            this.pos2d = pos2d;
+            this.ranger = ranger;
+            this.gripper = gripper;
+            setDesignated(designatedA, designatedB);
+            
+            ArrayList<Point> garbages = new ArrayList<Point>();
+            int[][] map = RobotData.INSTANCE.getMap();
+            for(int i = 0; i < map.length; i++) {
+            	for(int j = 0; j < map.length; j++) {
+            		if(map[i][j] == 2) {
+            			garbages.add(new Point(i, j));
+            		}
+            	}
+            }
+            RobotData.INSTANCE.setGarbage(garbages);
         }
 
         public void startCollection() {
@@ -30,23 +41,30 @@ public class GarbageCollector {
                 for (Point garbage : garbages) {
                         pathPlanner = new PathPlanner(pos2d, ranger);
                         try {PathPlanner.testMap();} catch (IOException e) {};
+                        while(!gripper.isDataReady()) {};
+                        System.out.println(gripper.getData().getBeams());
                         fetchGarbage(garbage);
                         
                         System.out.println("Garbage fetched");
-                        while(!gripper.isDataReady()){};
-                        System.out.println(gripper.getData().getBeams());
                         //System.out.println(RobotData.INSTANCE.getLocation());
-                        //disposeGarbage(garbage);
+                        disposeGarbage(garbage);
                 }
         }
         private void disposeGarbage(Point garbage) {
                 pathPlanner.goToPoint(designated);
-                // + open grippers
+                gripper.setGripper(1);
         }
 
         private void fetchGarbage(Point garbage) {
                 pathPlanner.goToPenultimate(garbage);
-                //dockToGarbage(garbage);
+                while(!gripper.isDataReady()) {};
+                if (gripper.getData().getBeams() != 0) {
+                	gripper.close();
+                	//gripper.close();
+                	//gripper.store();
+                	//gripper.open();
+                }
+               
         }
 
         private void dockToGarbage(Point garbage) {

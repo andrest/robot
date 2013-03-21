@@ -52,8 +52,16 @@ public class PathPlanner {
 //              System.out.println("Going from " + startPoint + " to " + target);
                 mapArray = RobotData.INSTANCE.getMap();
                 ArrayList<Point> path = getPath(getLocation(), target);
+                for(int j=0;j<path.size();j++)
+                    mapArray[path.get(j).x][path.get(j).y] = 4;
+                System.out.println("Going from: " + transformY(RobotData.INSTANCE.getLocation().x) + " "+ transformX(RobotData.INSTANCE.getLocation().y) + 
+     				   "  Going to: " + transformY(target.x) + " " + transformX(target.y));
                 ArrayList<Point> straight = straightLines(path);
-        executePath(path,false);
+                
+                Thread worker = new Thread(new StopAtPickup(target));
+                worker.start();
+                executePath(straight, false);
+                try {worker.join();} catch (InterruptedException e) {};
                 
                 //return when it gets to the point
         }
@@ -157,7 +165,7 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-        String[][] mapArray = mapFromFile("src/Rumbaugh/testmap2.txt");
+        String[][] mapArray = mapFromFile("testmap2.txt");
         int h = mapArray.length;
         int l = mapArray[0].length;
         int[][] arr = new int[h][l];
@@ -167,18 +175,21 @@ public class PathPlanner {
                         arr[i][j] = Integer.parseInt(mapArray[i][j]);
         
         RobotData.INSTANCE.setMap(arr);
-        
+        /*
         ArrayList<Point> garb = new ArrayList<Point>();
-        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(2)));
+        //garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(2)));
+        //garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(2)));
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
         garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
         garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
         garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
         garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
         garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(-2)));
         //garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
-
+		
         
         RobotData.INSTANCE.setGarbage(garb);
+    	*/
     }
         
     private static double transformX (double X){
@@ -320,8 +331,8 @@ public class PathPlanner {
                         }
                 
 
-                return neighbors;
-        }
+            return neighbors;
+    }
         
 
         /**
@@ -372,7 +383,10 @@ public class PathPlanner {
         }
         
     public void goToPenultimate(Point target) {
+    	//new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
         mapArray = RobotData.INSTANCE.getMap();
+        System.out.println("Going from: " + transformY(RobotData.INSTANCE.getLocation().x) + " "+ transformX(RobotData.INSTANCE.getLocation().y) + 
+        				   "  Going to: " + transformY(target.x) + " " + transformX(target.y));
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
         for(int j=0;j<path.size();j++)
             mapArray[path.get(j).x][path.get(j).y] = 4;
@@ -380,12 +394,7 @@ public class PathPlanner {
         Thread worker = new Thread(new StopAtPickup(target));
         worker.start();
         executePath(straight, false);
-        try {
-			worker.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {worker.join();} catch (InterruptedException e) {};
         
     }
     static private double getDistance(double ax, double ay, double bx, double by) {
@@ -410,7 +419,7 @@ public class PathPlanner {
         	 double x = pos2d.getX();
         	 double y = pos2d.getY();
         	 System.out.println("Distance: " +getDistance(x, y, gx, gy));
-        	 if (getDistance(x, y, gx, gy) <= 0.6) {
+        	 if (getDistance(x, y, gx, gy) <= 0.4) {
         		 pos2d.setSpeed(0, 0);
         		 while(!pos2d.isDataReady()){};
         		 x = pos2d.getX();
@@ -421,7 +430,7 @@ public class PathPlanner {
         		 double yaw = getAngle(gx, gy, x, y);
         		 stop = true;
         		 cancelled = true;
-        		 pos2d.setPosition(new PlayerPose2d(x, y, yaw), new PlayerPose2d(1, 1, 1), 0);
+        		 //pos2d.setPosition(new PlayerPose2d(x, y, yaw), new PlayerPose2d(1, 1, 1), 0);
         		 try { Thread.sleep(1000);} catch (Exception e) {}
         		 pos2d.setSpeed(0, 0);
         		 System.out.println("should be between grippers!");

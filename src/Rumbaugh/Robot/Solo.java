@@ -112,7 +112,7 @@ public class Solo {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
+                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(140,140), new Point(140,140));          
                 garbageCollector.startCollection();
                 //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
                 //WallFollower.map();
