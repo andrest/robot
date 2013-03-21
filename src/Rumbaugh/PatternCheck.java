@@ -2,7 +2,9 @@ package Rumbaugh;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -18,9 +20,9 @@ static void patternCorrect(int[][] a){
     	for(int i=5;i<RobotData.ARRAY_HEIGHT-5;i++)
     		for(int j=5;j<RobotData.ARRAY_LENGTH-5;j++)
     		{
-    			if(a[i][j]==1 && a[i][j+2]==1 && (a[i][j+1] == 0 || a[i][j+1] == 3 || a[i][j+1] == 9))
+    			if(a[i][j]==1 && a[i][j+2]==1 && Arrays.asList(0,3,9).contains(a[i][j+1]))
     				a[i][j+1]=1;
-    			if(a[i][j]==1 && a[i+2][j]==1 && (a[i+1][j] == 0 || a[i+1][j] == 3 || a[i+1][j] == 9))
+    			if(a[i][j]==1 && a[i+2][j]==1 && Arrays.asList(0,3,9).contains(a[i+1][j]))
     				a[i+1][j]=1;
     			if(a[i][j]==9 && a[i][j+2]==9 && a[i][j+1] == 8)
     				a[i][j+1]=9;
@@ -37,17 +39,21 @@ static void patternCorrect(int[][] a){
     					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 9)
     							a[i][j] = 8;
-    			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j]!= 8 && a[i][j] != 5)
+    			if(!Arrays.asList(1,2,9,8,5).contains(a[i][j]))
     				for(int k=i-1;k<= i+1;k++)
     					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 8)
     							a[i][j] = 7;
-    			if(a[i][j] != 1 && a[i][j] != 2 && a[i][j] != 9 && a[i][j]!= 8 && a[i][j] != 5 && a[i][j] != 7)
+    			if(!Arrays.asList(1,2,5,7,8,9).contains(a[i][j]))
     				for(int k=i-1;k<= i+1;k++)
     					for(int p = j-1;p<= j+1;p++)
     						if(a[k][p] == 7)
     							a[i][j] = 6;
-    			
+    			if(a[i][j] == 1 || a[i][j] ==9)
+				for(int k=i-1;k<= i+1;k++)
+					for(int p = j-1;p<= j+1;p++)
+						if(a[j][p] == 5)
+							a[i][j] = 8;
     			if(a[i][j] == 2){
     				for(int k=i-1;k<= i+1;k++)
     					for(int p = j-1;p<= j+1;p++)
@@ -225,6 +231,7 @@ public static Point getClosestUnexplored(int x, int y, int[][] map, int target){
 			}
 	return coordinates;
 }
+
 
 }
 

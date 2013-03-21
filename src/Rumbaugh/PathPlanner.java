@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
@@ -62,20 +63,20 @@ public class PathPlanner {
                 return reconstructPath();
         }
         
-        public static double getAngle(double a,double b,double c, double d){
-                if((a>=c&&b>=d)||(a>=c&&b<=d))
-                        return Math.asin((d-b)/
-                                Math.sqrt(Math.pow((a-c),2)+
-                                                Math.pow((b-d), 2)));
-                        else if(a<c&&b<=d)
-                                
-                                return Math.toRadians(90.0)+Math.acos((b-d)/
-                                        Math.sqrt(Math.pow((a-c),2)+
-                                                        Math.pow((b-d), 2)));
-                        else return -Math.toRadians(90.0)+Math.asin((a-c)/
-                                Math.sqrt(Math.pow((a-c),2)+
-                                                Math.pow((b-d), 2)));
-        }
+    	public double getAngle(double a,double b,double c, double d){
+    		if((a>=c&&b>=d)||(a>=c&&b<=d))
+    			return Math.asin((b-d)/
+    	        		Math.sqrt(Math.pow((a-c),2)+
+    	        				Math.pow((b-d), 2)));
+    			else if(a<c&&b>=d)
+    				
+    				return Math.toRadians(90.0)+Math.acos((b-d)/
+    		        		Math.sqrt(Math.pow((a-c),2)+
+    		        				Math.pow((b-d), 2)));
+    			else return -Math.toRadians(90.0)+Math.asin((a-c)/
+    	        		Math.sqrt(Math.pow((a-c),2)+
+    	        				Math.pow((b-d), 2)));
+    	}
         
         public void executePath(ArrayList<Point> nodes, boolean skipLast) {
         		stop = false;
@@ -156,7 +157,7 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-        String[][] mapArray = mapFromFile("testmap2.txt");
+        String[][] mapArray = mapFromFile("src/Rumbaugh/testmap2.txt");
         int h = mapArray.length;
         int l = mapArray[0].length;
         int[][] arr = new int[h][l];
@@ -168,7 +169,7 @@ public class PathPlanner {
         RobotData.INSTANCE.setMap(arr);
         
         ArrayList<Point> garb = new ArrayList<Point>();
-        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(2)));
         garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
         garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
         garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
@@ -292,26 +293,26 @@ public class PathPlanner {
                 int k = Integer.parseInt(str.split(" ")[2]);
         for(int alfa = i-1; alfa<= i+1; alfa++)
             for(int beta = j-1; beta<=j+1;beta++){
-                                if((mapArray[alfa][beta] == 3 || mapArray[alfa][beta] == 6 || mapArray[alfa][beta] == 7) &&(alfa != i || beta != j)){
+                                if(Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[alfa][beta]) &&(alfa != i || beta != j)){
                                         if((alfa+beta)%2 != (i+j)%2){
                                                 neighbors.add(alfa + " " + beta+ " " + (10+k + getH(alfa+" " + beta, tar)));
                                         }
                                         else{
                                                 if((alfa == i-1) && (beta == j-1) && 
-                                                        (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7)&&
-                                                        (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
+                                                        Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i-1][j])&&
+                                                        Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i][j-1]))
                                                         neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                 else if((alfa == i-1) && (beta == j+1) && 
-                                                                (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7) && 
-                                                                (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
+                                                                Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i-1][j]) && 
+                                                                Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i][j+1]))
                                                                 neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                         else if((alfa == i+1) && (beta == j-1) && 
-                                                                        (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7) &&
-                                                                        (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 || mapArray[i+1][j] == 7))
+                                                                        Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i][j-1]) &&
+                                                                        Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i+1][j]))
                                                                         neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                                 else if((alfa == i+1) && (beta == j+1) && 
-                                                                                (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 ||  mapArray[i+1][j] == 7) &&
-                                                                                (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
+                                                                                Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i+1][j]) &&
+                                                                                Arrays.asList(2,3,4,5,6,7,8).contains(mapArray[i][j+1]))
                                                                                 neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                         }
                                 }
@@ -411,9 +412,10 @@ public class PathPlanner {
         	 System.out.println("Distance: " +getDistance(x, y, gx, gy));
         	 if (getDistance(x, y, gx, gy) <= 0.6) {
         		 pos2d.setSpeed(0, 0);
+        		 while(!pos2d.isDataReady()){};
         		 x = pos2d.getX();
 	        	 y = pos2d.getY();
-        		 Point bot = RobotData.INSTANCE.getLocation();
+        		// Point bot = RobotData.INSTANCE.getLocation();
         		 // turn to face the target at the same location
         		 //double yaw = getAngle(garbage.getY(), garbage.getX(), bot.x, bot.y);
         		 double yaw = getAngle(gx, gy, x, y);
