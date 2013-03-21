@@ -220,8 +220,8 @@ public class WallFollower{
             for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
             	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
             varMap[i][j]= map[i][j];
-            if(iterator%10== 0){
-            	if(iterator == 10){
+            if(iterator%30== 0){
+            	if(iterator == 30){
                 	for(int i= 0;i<RobotData.ARRAY_HEIGHT; i++)
                 		for(int j= 0;j<RobotData.ARRAY_LENGTH; j++){
                 			if(map[i][j] == 1)
@@ -267,19 +267,19 @@ public class WallFollower{
         
         else
         	System.out.print("Inner");
-        int[][] map = RobotData.INSTANCE.getMap();
-    	for(int i= 0;i<map.length; i++) {
-    		for(int j= 0;j<map[i].length; j++){
-    			System.out.print(map[i][j] + " ");
-//    			varMap[i][j] = map[i][j];
-//    			if(varMap[i][j] == 0 && (varMap[i][j+1] == 3 || map[i][j-1] == 3))
-//    				if(PatternCheck.UnexploredFloodFill(i, j, varMap) < 15)
-//    					PatternCheck.UnexploredFloodFill(i, j, WallFollower.map);
+        int[][] testmap= new int[RobotData.ARRAY_HEIGHT][RobotData.ARRAY_LENGTH];
+    	for(int i= 0;i<RobotData.INSTANCE.getMap().length; i++) 
+    		for(int j= 0;j<RobotData.INSTANCE.getMap()[i].length; j++){
+        			testmap[i][j] = RobotData.INSTANCE.getMap()[i][j];}
+    	for(int i= 0;i<RobotData.INSTANCE.getMap().length; i++) 
+    		for(int j= 0;j<RobotData.INSTANCE.getMap()[i].length; j++){
+        			if(testmap[i][j] == 0 && (testmap[i][j+1] == 3 || testmap[i][j-1] == 3))
+    				if(PatternCheck.UnexploredFloodFill(i, j, testmap) < 20){
+    					System.out.println(true);
+    					PatternCheck.UnexploredFloodFill(i, j, RobotData.INSTANCE.getMap());
+    				}
     		}
-    		System.out.println();
-    	}
         posi.setSpeed(0, 0);
-
     }
     
     static void getWall (Position2DInterface posi, RangerInterface rngi) {
@@ -376,7 +376,6 @@ public class WallFollower{
         while(!fid.isDataReady());
         PlayerFiducialItem[] data = fid.getData().getFiducials();
         for(int i=0; i<data.length; i++) {
-
     		double X = data[i].getPose().getPx();
     		double Y = data[i].getPose().getPy();
     		
