@@ -52,9 +52,6 @@ public class PathPlanner {
                 mapArray = RobotData.INSTANCE.getMap();
                 ArrayList<Point> path = getPath(getLocation(), target);
                 ArrayList<Point> straight = straightLines(path);
-        for(int i=0;i<path.size();i++){
-                System.out.println(path.get(i));
-        }
         executePath(path,false);
                 
                 //return when it gets to the point
@@ -159,7 +156,7 @@ public class PathPlanner {
         return strng.toArray(new String[0][0]);
     }
     public static void testMap() throws IOException{
-        String[][] mapArray = mapFromFile("testmap2.txt");
+        String[][] mapArray = mapFromFile("src/Rumbaugh/testfile.txt");
         int h = mapArray.length;
         int l = mapArray[0].length;
         int[][] arr = new int[h][l];
@@ -171,16 +168,7 @@ public class PathPlanner {
         RobotData.INSTANCE.setMap(arr);
         
         ArrayList<Point> garb = new ArrayList<Point>();
-        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
-        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
-        garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
-        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
-        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
-        garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(-2)));
-        //garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
-
-        
-        RobotData.INSTANCE.setGarbage(garb);
+     //   RobotData.INSTANCE.setGarbage(garb);
     }
         
     private static double transformX (double X){
@@ -297,25 +285,25 @@ public class PathPlanner {
             for(int beta = j-1; beta<=j+1;beta++){
                                 if((mapArray[alfa][beta] == 3 || mapArray[alfa][beta] == 6 || mapArray[alfa][beta] == 7) &&(alfa != i || beta != j)){
                                         if((alfa+beta)%2 != (i+j)%2){
-                                                neighbors.add(alfa + " " + beta+ " " + ((mapArray[alfa][beta]*1000)+10+k + getH(alfa+" " + beta, tar)));
+                                                neighbors.add(alfa + " " + beta+ " " + (10+k + getH(alfa+" " + beta, tar)));
                                         }
                                         else{
                                                 if((alfa == i-1) && (beta == j-1) && 
                                                         (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7)&&
-                                                        (mapArray[i][j-1] != 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
-                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
+                                                        (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
+                                                        neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                 else if((alfa == i-1) && (beta == j+1) && 
                                                                 (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7) && 
                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
+                                                                neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                         else if((alfa == i+1) && (beta == j-1) && 
                                                                         (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7) &&
                                                                         (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 || mapArray[i+1][j] == 7))
-                                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
+                                                                        neighbors.add(alfa + " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                                                 else if((alfa == i+1) && (beta == j+1) && 
                                                                                 (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 ||  mapArray[i+1][j] == 7) &&
                                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
+                                                                                neighbors.add(alfa+ " " + beta + " " + (14+k + getH(alfa+" " + beta, tar)));
                                         }
                                 }
                                 
@@ -341,7 +329,7 @@ public class PathPlanner {
         int xTar = Integer.parseInt(tar.split(" ")[0]);
         int yTar = Integer.parseInt(tar.split(" ")[1]);
         
-        return (int) (10 *Math.sqrt(((xCur - xTar)* (xCur - xTar)) + ((yCur - yTar)* (yCur - yTar))));
+        return (int) (10 *Math.sqrt(((xCur - xTar)* (xCur - xTar)) + ((yCur - yTar)* (yCur - yTar))) + (20* mapArray[xCur][yCur]));
 }
 
         
@@ -376,8 +364,6 @@ public class PathPlanner {
     public void goToPenultimate(Point target) {
                 mapArray = RobotData.INSTANCE.getMap();
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
-        for(int j=0;j<path.size();j++)
-            mapArray[path.get(j).x][path.get(j).y] = 4;
         ArrayList<Point> straight = straightLines(path);
         Thread worker = new Thread(new StopAtPickup(target));
         worker.start();
