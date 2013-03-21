@@ -87,7 +87,7 @@ public class Solo {
 		    	        			try { Thread.sleep(500);} catch (Exception e) {}
 			    	    	        while(!pos2d.isDataReady());
 			    	    	        System.out.println(System.nanoTime());
-			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 5000 > System.currentTimeMillis())) {
+			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 5000 > System.currentTimeMillis()) {
 			    	    	        	pos2d.setSpeed(0, 0);
 			    	    	        	return;
 			    	    	        }
