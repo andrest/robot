@@ -168,7 +168,16 @@ public class PathPlanner {
         RobotData.INSTANCE.setMap(arr);
         
         ArrayList<Point> garb = new ArrayList<Point>();
-     //   RobotData.INSTANCE.setGarbage(garb);
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
+        garb.add(new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-9)));
+        garb.add(new Point((int)RobotData.convertY(-6),(int)RobotData.convertX(-7)));
+        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-6)));
+        garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
+        garb.add(new Point((int)RobotData.convertY(6),(int)RobotData.convertX(-2)));
+        //garb.add(new Point((int)RobotData.convertY(4),(int)RobotData.convertX(-1)));
+
+        
+        RobotData.INSTANCE.setGarbage(garb);
     }
         
     private static double transformX (double X){
@@ -362,8 +371,10 @@ public class PathPlanner {
         }
         
     public void goToPenultimate(Point target) {
-                mapArray = RobotData.INSTANCE.getMap();
+        mapArray = RobotData.INSTANCE.getMap();
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+        for(int j=0;j<path.size();j++)
+            mapArray[path.get(j).x][path.get(j).y] = 4;
         ArrayList<Point> straight = straightLines(path);
         Thread worker = new Thread(new StopAtPickup(target));
         worker.start();
