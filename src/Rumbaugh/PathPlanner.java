@@ -80,8 +80,7 @@ public class PathPlanner {
         }
         
         public void executePath(ArrayList<Point> nodes, boolean skipLast) {
-                for(int j=0;j<nodes.size();j++)
-                        mapArray[nodes.get(j).x][nodes.get(j).y] = 4;
+
                 double yaw;
                 ArrayList<Point2D.Double> points = new ArrayList<Point2D.Double>();
                 ArrayList<PlayerPose2d> posePath = new ArrayList<PlayerPose2d>();
@@ -297,25 +296,25 @@ public class PathPlanner {
             for(int beta = j-1; beta<=j+1;beta++){
                                 if((mapArray[alfa][beta] == 3 || mapArray[alfa][beta] == 6 || mapArray[alfa][beta] == 7) &&(alfa != i || beta != j)){
                                         if((alfa+beta)%2 != (i+j)%2){
-                                                neighbors.add(alfa + " " + beta+ " " + ((mapArray[alfa][beta]*20)+10+k + getH(alfa+" " + beta, tar)));
+                                                neighbors.add(alfa + " " + beta+ " " + ((mapArray[alfa][beta]*1000)+10+k + getH(alfa+" " + beta, tar)));
                                         }
                                         else{
                                                 if((alfa == i-1) && (beta == j-1) && 
                                                         (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7)&&
                                                         (mapArray[i][j-1] != 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7))
-                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
+                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
                                                 else if((alfa == i-1) && (beta == j+1) && 
                                                                 (mapArray[i-1][j] == 3 || mapArray[i-1][j] == 6 || mapArray[i-1][j] == 7) && 
                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
+                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
                                                         else if((alfa == i+1) && (beta == j-1) && 
                                                                         (mapArray[i][j-1] == 3 || mapArray[i][j-1] == 6 || mapArray[i][j-1] == 7) &&
                                                                         (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 || mapArray[i+1][j] == 7))
-                                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
+                                                                        neighbors.add(alfa + " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
                                                                 else if((alfa == i+1) && (beta == j+1) && 
                                                                                 (mapArray[i+1][j] == 3 || mapArray[i+1][j] == 6 ||  mapArray[i+1][j] == 7) &&
                                                                                 (mapArray[i][j+1] == 3 || mapArray[i][j+1] == 6 || mapArray[i][j+1] == 7))
-                                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*50)+14+k + getH(alfa+" " + beta, tar)));
+                                                                                neighbors.add(alfa+ " " + beta + " " + ((mapArray[alfa][beta]*1000)+14+k + getH(alfa+" " + beta, tar)));
                                         }
                                 }
                                 
@@ -376,6 +375,8 @@ public class PathPlanner {
     public void goToPenultimate(Point target) {
                 mapArray = RobotData.INSTANCE.getMap();
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
+        for(int j=0;j<path.size();j++)
+            mapArray[path.get(j).x][path.get(j).y] = 4;
         ArrayList<Point> straight = straightLines(path);
         executePath(straight, true);
         

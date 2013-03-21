@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Rumbaugh.GarbageCollector;
 import Rumbaugh.PathPlanner;
@@ -45,7 +47,10 @@ public class Solo {
          * client and initialise the elements of the robot
          */
         public Solo(){
-                        
+        	
+        		
+                crashRobots(); 
+                 
                 robot = null;
                 pos2d_0 = null;
                 sonar_0 = null;
@@ -62,23 +67,55 @@ public class Solo {
                         System.out.println(exception);
                         System.exit(1);
                 }
-                robot.runThreaded(-1, -1);
+                robot.runThreaded(-1, -1); 
                 //pathPlanner = new PathPlanner(pos2d_0, sonar_0);
+        }
+        
+        public void crashRobots() {
+        //int i;
+        for (int i = 1; i <= 2; i++)	{
+	        try{
+	        		final PlayerClient robot = new PlayerClient(SERVER_NAME, PORT_NUMBER);
+	        		final Position2DInterface  pos2d = robot.requestInterfacePosition2D(i, PLAYER_OPEN_MODE);
+	    	        robot.runThreaded(-1, -1);
+	    	        pos2d.setSpeed(-1, 0);
+
+	    	        Thread thread = new Thread(){
+	    	        	public void run() {
+	    	        		while(true){
+	    	        			try { Thread.sleep(500);} catch (Exception e) {}
+		    	    	        while(!pos2d.isDataReady());
+		    	    	        //System.out.println(pos2d.getData().getStall());
+		    	    	        if(pos2d.getData().getStall() == 1) {
+		    	    	        	pos2d.setSpeed(0, 0);
+		    	    	        	return;
+		    	    	        }
+		    	    	        
+	    	        		}
+	    	            }
+	    	        };
+	    	        thread.run();
+	        } catch(PlayerException exception){
+                System.out.println(exception);
+                System.exit(1);
+	        }
+	    	
+	        }
         }
         public void startMapping(){
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
-                try {
+                /*try {
 					PathPlanner.testMap();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
-                garbageCollector.startCollection();
-                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                //WallFollower.map();
+				}*/
+                //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(0,0), new Point(0,0));          
+                //garbageCollector.startCollection();
+                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                WallFollower.map();
         }
 
                 public void collectGarbage(double x1, double y1, double x2, double y2) {
