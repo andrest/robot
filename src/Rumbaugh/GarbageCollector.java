@@ -43,6 +43,7 @@ public class GarbageCollector {
                         try {PathPlanner.testMap();} catch (IOException e) {};
                         while(!gripper.isDataReady()) {};
                         System.out.println(gripper.getData().getBeams());
+                        gripper.open();
                         fetchGarbage(garbage);
                         
                         System.out.println("Garbage fetched");
@@ -51,6 +52,7 @@ public class GarbageCollector {
                 }
         }
         private void disposeGarbage(Point garbage) {
+        		pathPlanner = new PathPlanner(pos2d, ranger);
                 pathPlanner.goToPoint(designated);
                 gripper.setGripper(1);
         }

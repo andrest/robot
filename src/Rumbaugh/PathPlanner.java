@@ -51,7 +51,7 @@ public class PathPlanner {
 //              Point startPoint = new Point(getLocation());
 //              System.out.println("Going from " + startPoint + " to " + target);
                 mapArray = RobotData.INSTANCE.getMap();
-                ArrayList<Point> path = getPath(getLocation(), target);
+                ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
                 for(int j=0;j<path.size();j++)
                     mapArray[path.get(j).x][path.get(j).y] = 4;
                 System.out.println("Going from: " + transformY(RobotData.INSTANCE.getLocation().x) + " "+ transformX(RobotData.INSTANCE.getLocation().y) + 
