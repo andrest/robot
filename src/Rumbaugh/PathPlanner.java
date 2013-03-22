@@ -383,8 +383,6 @@ public class PathPlanner {
     public void goToPenultimate(Point target) {
         mapArray = RobotData.INSTANCE.getMap();
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
-        for(int j=0;j<path.size();j++)
-            mapArray[path.get(j).x][path.get(j).y] = 4;
         ArrayList<Point> straight = straightLines(path);
         Thread worker = new Thread(new StopAtPickup(target));
         worker.start();
