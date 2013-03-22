@@ -54,8 +54,6 @@ public class PathPlanner {
                 ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
                 for(int j=0;j<path.size();j++)
                     mapArray[path.get(j).x][path.get(j).y] = 4;
-                System.out.println("Going from: " + transformY(RobotData.INSTANCE.getLocation().x) + " "+ transformX(RobotData.INSTANCE.getLocation().y) + 
-     				   "  Going to: " + transformY(target.x) + " " + transformX(target.y));
                 ArrayList<Point> straight = straightLines(path);
                 
                 Thread worker = new Thread(new StopAtPickup(target));
@@ -123,7 +121,7 @@ public class PathPlanner {
                         }
                         pos2d.setPosition( pp2d, new PlayerPose2d(1, 1, 1), 0);
                         
-                        System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
+                        //System.out.println(pp2d.getPx() + "  " + pp2d.getPy());
                         boolean b= true;
                         while(b && stop == false){
                                 while(!rngi.isDataReady());
@@ -142,7 +140,7 @@ public class PathPlanner {
                         // skip the last node
                         if (i == posePath.size()-2 && skipLast == true) break;
                 }
-                System.out.println("Done");
+                //System.out.println("Done");
                         
                 }
                 
@@ -383,10 +381,7 @@ public class PathPlanner {
         }
         
     public void goToPenultimate(Point target) {
-    	//new Point((int)RobotData.convertY(0),(int)RobotData.convertX(-8)));
         mapArray = RobotData.INSTANCE.getMap();
-        System.out.println("Going from: " + transformY(RobotData.INSTANCE.getLocation().x) + " "+ transformX(RobotData.INSTANCE.getLocation().y) + 
-        				   "  Going to: " + transformY(target.x) + " " + transformX(target.y));
         ArrayList<Point> path = getPath(RobotData.INSTANCE.getLocation(), target);
         for(int j=0;j<path.size();j++)
             mapArray[path.get(j).x][path.get(j).y] = 4;
@@ -432,7 +427,6 @@ public class PathPlanner {
         		 //pos2d.setPosition(new PlayerPose2d(x, y, yaw), new PlayerPose2d(1, 1, 1), 0);
         		 try { Thread.sleep(1000);} catch (Exception e) {}
         		 pos2d.setSpeed(0, 0);
-        		 System.out.println("should be between grippers!");
         	 }
 	         
 	         try { Thread.sleep(50);} catch (Exception e) {}

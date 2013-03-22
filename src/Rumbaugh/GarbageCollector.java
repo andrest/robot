@@ -40,9 +40,8 @@ public class GarbageCollector {
                 garbages = RobotData.INSTANCE.getGarbage();
                 for (Point garbage : garbages) {
                         pathPlanner = new PathPlanner(pos2d, ranger);
-                        try {PathPlanner.testMap();} catch (IOException e) {};
                         while(!gripper.isDataReady()) {};
-                        System.out.println(gripper.getData().getBeams());
+                        //System.out.println(gripper.getData().getBeams());
                         gripper.open();
                         if(fetchGarbage(garbage) == false) continue;
                         
