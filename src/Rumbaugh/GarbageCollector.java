@@ -18,7 +18,6 @@ public class GarbageCollector {
     
 
         public GarbageCollector(GripperInterface gripper, Position2DInterface pos2d, RangerInterface ranger, Point designatedA, Point designatedB) { 
-        	try {PathPlanner.testMap();} catch (IOException e) {};
             this.pos2d = pos2d;
             this.ranger = ranger;
             this.gripper = gripper;

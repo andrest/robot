@@ -57,13 +57,13 @@ public class WallFollower{
     static RangerInterface rngi;
     static FiducialInterface fid;
     static PathPlanner pathPlanner;;
-        static Thread t1 = new Thread(new ThreadedClass(7));
-        static boolean bolThread = true;
-        static Thread t2 = new Thread(new ThreadedClass(1));
-        static boolean wallBoolean = false;
-        static boolean outerwall = false;
-        
-        
+	static Thread t1 = new Thread(new ThreadedClass(7));
+	static boolean bolThread = true;
+	static Thread t2 = new Thread(new ThreadedClass(1));
+	static boolean wallBoolean = false;
+	static boolean outerwall = true;
+	
+	
     public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid){
         this.robot = robot;
         this.posi = posi;
@@ -85,31 +85,31 @@ public class WallFollower{
     
     
     public static void mapWhole(){
-        boolean b = false;
-        int i=0,j=0;
-        while(i<map.length && !b){
-                j=0;
-                while(j<map[0].length){
-                if(map[i][j] == 0)
-                                b=true;
-                j++;
-                }
-                i++;
+    	boolean b = false;
+    	int i=0,j=0;
+    	while(i<map.length && !b){
+    		j=0;
+    		while(j<map[0].length){
+    		if(map[i][j] == 0)
+				b=true;
+    		j++;
+    		}
+    		i++;
 
-        }                       
-        System.out.println(b);
+    	}    			
+    	System.out.println(b);
 
-        if(b){          
-                goToUnexplored();
-                System.out.println("Still unexplored areas remaining");
-                mapWhole();
-        }
-        else{
-                bolThread= false;
-                PatternCheck.wallCorrect(map);
-                PatternCheck.patternCorrect(map);
-                System.out.print("Finished mapping");
-        }
+    	if(b){    	
+    		goToUnexplored();
+    		System.out.println("Still unexplored areas remaining");
+    		mapWhole();
+    	}
+    	else{
+    		bolThread= false;
+           	PatternCheck.wallCorrect(map);
+           	PatternCheck.patternCorrect(map);
+    		System.out.print("Finished mapping");
+    	}
     }
     
     public static void goToUnexplored(){
@@ -162,8 +162,8 @@ public class WallFollower{
         getWall (posi, rngi);
         wallBoolean = true;
         for(int i=0;i<RobotData.ARRAY_HEIGHT;i++)
-                for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
-                        varMap[i][j]= map[i][j];
+        	for(int j=0;j<RobotData.ARRAY_LENGTH;j++)
+        		varMap[i][j]= map[i][j];
         boolean bol = true;
         int iterator = 0;
         int counter = 0;
