@@ -304,8 +304,12 @@ public class WallFollower{
             previousLeftSide = sonarValues[4];
             
             // rotate more if we're almost bumping in front
-            if (Math.min (leftSide, frontSide) == frontSide)
+             if (Math.min (leftSide, frontSide) == frontSide){
+            	if(sonarValues[8] >1)
                 yawSpeed = -DEF_YAW_SPEED * 5;
+            	else
+            		turnR180();
+            }
             else
                 yawSpeed = -DEF_YAW_SPEED;
             
@@ -358,6 +362,15 @@ public class WallFollower{
     	}
     	
     }
+
+    static void turnR180 (){
+    	int a=0;
+    	posi.setSpeed(0, 0.3);
+    	while(a<180){
+    		a++;
+    		try{Thread.sleep(70);}catch(Exception e) { }
+    	}
+    }
     static boolean validNeighbours(int i, int j){
     	boolean b= true;
     	for(int k = i-5;k<=i+5;k++)
@@ -368,7 +381,7 @@ public class WallFollower{
     	return b;
     }
     
-    static void mapGarbage(){
+static void mapGarbage(){
     	while(!posi.isDataReady());
 		tempPositionX = posi.getX();
 		tempPositionY = posi.getY();
@@ -376,11 +389,14 @@ public class WallFollower{
         while(!fid.isDataReady());
         PlayerFiducialItem[] data = fid.getData().getFiducials();
         for(int i=0; i<data.length; i++) {
-    		double X = data[i].getPose().getPx();
+    		double X = data[i].getPose().getPx() +0.1;
     		double Y = data[i].getPose().getPy();
-    		
+    		if(Y<0)
+    			Y = Y-0.1;
+    		else if(Y>0)
+    			Y = Y+0.1;
     		double distance =Math.sqrt((X * X)+(Y * Y));
-    		double angle = tempYaw + Math.atan(Y/X);
+    		double angle = tempYaw + Math.atan2(Y,X);
     		
     		double xDistance = distance * Math.cos(angle);
     		double yDistance = distance * Math.sin(angle);
@@ -389,12 +405,13 @@ public class WallFollower{
     		ind1= (int)Math.round(RobotData.ARRAY_HEIGHT - RobotData.RESOLUTION*(RobotData.HEIGHT_OFFSET + (tempPositionY +yDistance)));
     		ind2= (int)Math.round(RobotData.RESOLUTION*(RobotData.LENGTH_OFFSET+(tempPositionX + xDistance)));
 
-    		if (map[ind1][ind2] != 1 && validNeighbours(ind1, ind2) && data[i].getId() != 1 && data[i].getId() != 2){
+    		if (map[ind1][ind2] != 1 && validNeighbours(ind1, ind2) && Arrays.asList(5,6,7).contains(data[i].getId())){
     			map[ind1][ind2] = 2;
     		}
     			
     	}
     }
+
     
     static void mapExplored(int ind, Position2DInterface posi){
  
