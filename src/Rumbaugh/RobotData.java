@@ -77,12 +77,11 @@ public enum RobotData {
                                          (int)convertX(pos2d.getX()));
         }
 
-        static public double convertY(double a) {
-                return Math.round((ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + a))*100)/100;
+        static public int convertY(double a) {
+                return (int)Math.round((ARRAY_HEIGHT - RESOLUTION*(HEIGHT_OFFSET + a)));
         }
-        // Return e.g. 4.56
-        static public double convertX(double a) {
-                return Math.round(RESOLUTION*(LENGTH_OFFSET+a)*100)/100;
+        static public int convertX(double a) {
+                return (int)Math.round(RESOLUTION*(LENGTH_OFFSET+a));
         }
         
         private int[][] trimMap(int[][] map) {

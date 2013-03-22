@@ -5,9 +5,17 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javaclient3.FiducialInterface;
+import javaclient3.GripperInterface;
+import javaclient3.PlayerClient;
+import javaclient3.Position2DInterface;
+import javaclient3.RangerInterface;
+import javaclient3.structures.PlayerConstants;
+import javaclient3.PlayerException;
 import Rumbaugh.GarbageCollector;
 import Rumbaugh.PathPlanner;
 import Rumbaugh.RobotData;
+import Rumbaugh.WallFollower;
 /**
  * 
  * This is the class where the program
@@ -94,23 +102,19 @@ public class Solo {
                 RobotData.INSTANCE.initMap();
                 RobotData.INSTANCE.setPos2d(pos2d_0);
                 
-                try {
-					PathPlanner.testMap();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(140,140), new Point(140,140));          
-                garbageCollector.startCollection();
-                //WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
-                //WallFollower.map();
+                //try {PathPlanner.testMap();} catch (IOException e) {};
+                //GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point(160,220), new Point(160,220));          
+                //garbageCollector.startCollection();
+                WallFollower wf = new WallFollower(robot, pos2d_0, sonar_0, fiducial_0);
+                WallFollower.map();
         }
 
-                public void collectGarbage(double x1, double y1, double x2, double y2) {
-                        GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, new Point((int)x1,(int)y1), new Point((int)x2,(int)y2));          
-                        garbageCollector.startCollection();
-                        System.out.println("X1: "+x1+"\nY1: "+y1+"\nX2: "+x2+"\nY2: "+y2);
-                }
+        public void collectGarbage(double x1, double y1, double x2, double y2) {
+                GarbageCollector garbageCollector = new GarbageCollector(gripper_0, pos2d_0, sonar_0, 
+                		new Point(RobotData.convertY(y1),RobotData.convertX(x1)), new Point(RobotData.convertY(y2),RobotData.convertX(x2)));  
+                //System.out.println(new Point(RobotData.convertY(y1),RobotData.convertX(x1)) + "  \n" + new Point(RobotData.convertY(y2),RobotData.convertX(x2)));
+                garbageCollector.startCollection();
+        }
 
          
 }
