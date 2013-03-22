@@ -86,7 +86,7 @@ public class GarbageCollector {
             } else {
             	// turn left
             	while(!pos2d.isDataReady()) {};
-            	pos2d.setSpeed(0, 0.1);
+            	pos2d.setSpeed(0, 0.2);
             	double runFor1000 = System.currentTimeMillis()+1000;
             	
             	while(System.currentTimeMillis() < runFor1000) {
@@ -102,7 +102,7 @@ public class GarbageCollector {
             	
             	// turn right
             	while(!pos2d.isDataReady()) {};
-            	pos2d.setSpeed(0, -0.1);
+            	pos2d.setSpeed(0, -0.2);
             	double runFor2000 = System.currentTimeMillis()+2000;
             	while(System.currentTimeMillis() < runFor2000) {
             		while(!gripper.isDataReady()) {};
@@ -116,7 +116,7 @@ public class GarbageCollector {
             	}
             	// turn back to original
             	while(!pos2d.isDataReady()) {};
-            	pos2d.setSpeed(0, 0.4);
+            	pos2d.setSpeed(0, 0.8);
             	try { Thread.sleep (250); } catch (Exception e) { }
             	while(!pos2d.isDataReady()) {};
             	pos2d.setSpeed(0, 0);
