@@ -61,7 +61,7 @@ public class WallFollower{
 	static boolean bolThread = true;
 	static Thread t2 = new Thread(new ThreadedClass(1));
 	static boolean wallBoolean = false;
-	static boolean outerwall = false;
+	static boolean outerwall = true;
 	
 	
     public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid){
@@ -124,30 +124,29 @@ public class WallFollower{
     	map[tarX][tarY] = 3;
     		pathPlanner = new PathPlanner(posi, rngi);
           pathPlanner.goToPoint(new Point(tarX, tarY));
-    	
-          posi.setSpeed(0,0.3);
-          int a  = 0;
-          while (a<230){
-          	a++;
-          	try { Thread.sleep(100);} catch (Exception e) {}
-          }
-    	boolean bol=false;
-    	posi.setSpeed(0.7, 0);
-    	while(!bol){
+    	explore();
  
-    		getSonars(rngi);
-    		
-    		if(sonarValues[0]<1 ||sonarValues[2]<1){
-    			bol=true;
-    			WallFollow();
-    		}
-    		
-       	try {Thread.sleep(10);} catch (InterruptedException e) {}
-    }
     }
     
     public static void explore(){
-    	
+    	getSonars(rngi);
+    	if(frontSide > 2 && leftSide > 2 && sonarValues[8]>2){
+    		int a=0;
+    		posi.setSpeed(0.5, 0);
+            while (a<50){
+            	a++;
+            	try { Thread.sleep(50);} catch (Exception e) {}
+            }
+        posi.setSpeed(0,0.15);
+        a  = 0;
+        while (a<430){
+        	a++;
+        	try { Thread.sleep(100);} catch (Exception e) {}
+        }
+  		
+  			WallFollow();
+  		
+  }
     }
    
     
@@ -180,7 +179,7 @@ public class WallFollower{
                 xSpeed   = -0.10f;
                 yawSpeed = - DEF_YAW_SPEED * 3;
             } else
-            	if(sonarValues[3] > 2.0){
+            	if(sonarValues[3] > 1.7){
             		turnLeft(posi);
             	}
             	else
@@ -561,3 +560,4 @@ class MapFront implements Runnable{
 	}
 	
 }
+
