@@ -2,6 +2,7 @@ package Rumbaugh;
 
 
 import java.awt.Point;
+import java.util.Arrays;
 
 import javaclient3.FiducialInterface;
 import javaclient3.PlayerClient;
@@ -60,6 +61,7 @@ public class WallFollower{
 	static boolean bolThread = true;
 	static Thread t2 = new Thread(new ThreadedClass(1));
 	static boolean wallBoolean = false;
+	static boolean outerwall = false;
 	
 	
     public WallFollower(PlayerClient robot, Position2DInterface posi, RangerInterface rngi, FiducialInterface fid){
@@ -263,10 +265,12 @@ public class WallFollower{
         				PatternCheck.floodFill(i, j, map);
         		break;
         	}
+        	outerwall = true;
         }
         
         else
         	System.out.print("Inner");
+        if(outerwall){
         int[][] testmap= new int[RobotData.ARRAY_HEIGHT][RobotData.ARRAY_LENGTH];
     	for(int i= 0;i<RobotData.INSTANCE.getMap().length; i++) 
     		for(int j= 0;j<RobotData.INSTANCE.getMap()[i].length; j++){
@@ -279,6 +283,7 @@ public class WallFollower{
     					PatternCheck.UnexploredFloodFill(i, j, RobotData.INSTANCE.getMap());
     				}
     		}
+        }
         posi.setSpeed(0, 0);
     }
     

@@ -44,7 +44,7 @@ public class GarbageCollector {
                         while(!gripper.isDataReady()) {};
                         System.out.println(gripper.getData().getBeams());
                         gripper.open();
-                        fetchGarbage(garbage);
+                        if(fetchGarbage(garbage) == false) continue;
                         
                         System.out.println("Garbage fetched");
                         //System.out.println(RobotData.INSTANCE.getLocation());
@@ -57,15 +57,45 @@ public class GarbageCollector {
                 gripper.setGripper(1);
         }
 
-        private void fetchGarbage(Point garbage) {
+        private boolean fetchGarbage(Point garbage) {
                 pathPlanner.goToPenultimate(garbage);
                 while(!gripper.isDataReady()) {};
                 if (gripper.getData().getBeams() != 0) {
                 	gripper.close();
-                	//gripper.close();
-                	//gripper.store();
-                	//gripper.open();
+                	return true;
+                } else {
+                	while(!pos2d.isDataReady()) {};
+                	pos2d.setSpeed(0, 0.1);
+                	double runFor1000 = System.currentTimeMillis()+1000;
+                	
+                	while(System.currentTimeMillis() < runFor1000) {
+                		while(!gripper.isDataReady()) {};
+                		if(gripper.getData().getBeams() != 0) {
+                			while(!pos2d.isDataReady()) {};
+                			pos2d.setSpeed(0, 0);
+                			gripper.close();
+                			return true;
+                		}
+                		
+                	}
+                	
+                	while(!pos2d.isDataReady()) {};
+                	pos2d.setSpeed(0, -0.1);
+                	double runFor2000 = System.currentTimeMillis()+2000;
+                	
+                	while(System.currentTimeMillis() < runFor2000) {
+                		while(!gripper.isDataReady()) {};
+                		if(gripper.getData().getBeams() != 0) {
+                			while(!pos2d.isDataReady()) {};
+                			pos2d.setSpeed(0, 0);
+                			gripper.close();
+                			return true;
+                		}
+                		
+                	}
+                	
                 }
+                return false;
                
         }
 
