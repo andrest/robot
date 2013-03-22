@@ -69,11 +69,7 @@ public class Solo {
                 }
 
                 robot.runThreaded(-1, -1); 
-    	        //robot.requestDataDeliveryMode(PlayerClient.PLAYER_DATAMODE_PULL);
-    	        //robot.
-                //while(!gripper_0.isGeomReady()) {System.out.println("stuck");};
-                //gripper_0.getGeom().setCapacity((byte)10);
-                //pathPlanner = new PathPlanner(pos2d_0, sonar_0);
+                pathPlanner = new PathPlanner(pos2d_0, sonar_0);
         }
         
         public void crashRobots() {
@@ -93,6 +89,7 @@ public class Solo {
 			    	    	        while(!pos2d.isDataReady());
 			    	    	        if(pos2d.getData().getStall() == 1 || timeStarted + 15000 < System.currentTimeMillis()) {
 			    	    	        	pos2d.setSpeed(0, 0);
+			    	    	        	robot.close();
 			    	    	        	return;
 			    	    	        }
 			    	    	        

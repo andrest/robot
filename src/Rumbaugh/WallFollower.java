@@ -333,14 +333,14 @@ public class WallFollower{
     
     static void getSonars (RangerInterface rngi) {
         while (!rngi.isDataReady ());
-         while((sonarValues = rngi.getData ().getRanges ()) == null);
-        
-        for (int i = 0; i < rngi.getData ().getRanges_count (); i++)
+        while((sonarValues = rngi.getData ().getRanges ()) == null);
+        for (int i = 0; i < rngi.getData ().getRanges_count (); i++) {
             if (sonarValues[i] < SONAR_MIN_VALUE)
                 sonarValues[i] = SONAR_MIN_VALUE;
             else
                 if (sonarValues[i] > SONAR_MAX_VALUE)
                     sonarValues[i] = SONAR_MAX_VALUE;
+        }
         
         leftSide = Math.min (sonarValues[3], sonarValues [4]);
         frontSide = Math.min (Math.min(sonarValues [0], sonarValues [1]), sonarValues[2]);
