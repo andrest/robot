@@ -52,7 +52,7 @@ public class GarbageCollector {
         private void disposeGarbage(Point garbage) {
         		pathPlanner = new PathPlanner(pos2d, ranger);
                 pathPlanner.goToPoint(designated);
-                gripper.setGripper(1);
+                gripper.open();
         }
 
         private boolean fetchGarbage(Point garbage) {

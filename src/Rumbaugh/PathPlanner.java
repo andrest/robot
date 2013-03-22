@@ -132,7 +132,7 @@ public class PathPlanner {
                                 if(min<sonars[2])
                                         min = sonars[2];
                                 while(!pos2d.isDataReady());
-                                if(inRange(pp2d.getPx(),pos2d.getX(), 0.4) && inRange(pp2d.getPy(),pos2d.getY(),0.4) || min < 0.3){
+                                if(inRange(pp2d.getPx(),pos2d.getX(), 0.3) && inRange(pp2d.getPy(),pos2d.getY(),0.3) || min < 0.3){
                                         b= false;
         
                                 }
