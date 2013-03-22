@@ -2,26 +2,12 @@ package Rumbaugh.Robot;
 
 
 import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import Rumbaugh.GarbageCollector;
 import Rumbaugh.PathPlanner;
 import Rumbaugh.RobotData;
-import Rumbaugh.WallFollower;
-
-import javaclient3.FiducialInterface;
-import javaclient3.GripperInterface;
-import javaclient3.PlayerClient;
-import javaclient3.PlayerException;
-import javaclient3.Position2DInterface;
-import javaclient3.RangerInterface;
-import javaclient3.structures.PlayerConstants;
-
 /**
  * 
  * This is the class where the program

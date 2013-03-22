@@ -59,44 +59,72 @@ public class GarbageCollector {
 
         private boolean fetchGarbage(Point garbage) {
                 pathPlanner.goToPenultimate(garbage);
-                while(!gripper.isDataReady()) {};
-                if (gripper.getData().getBeams() != 0) {
-                	gripper.close();
-                	return true;
-                } else {
-                	while(!pos2d.isDataReady()) {};
-                	pos2d.setSpeed(0, 0.1);
-                	double runFor1000 = System.currentTimeMillis()+1000;
-                	
-                	while(System.currentTimeMillis() < runFor1000) {
-                		while(!gripper.isDataReady()) {};
-                		if(gripper.getData().getBeams() != 0) {
-                			while(!pos2d.isDataReady()) {};
-                			pos2d.setSpeed(0, 0);
-                			gripper.close();
-                			return true;
-                		}
-                		
-                	}
-                	
-                	while(!pos2d.isDataReady()) {};
-                	pos2d.setSpeed(0, -0.1);
-                	double runFor2000 = System.currentTimeMillis()+2000;
-                	
-                	while(System.currentTimeMillis() < runFor2000) {
-                		while(!gripper.isDataReady()) {};
-                		if(gripper.getData().getBeams() != 0) {
-                			while(!pos2d.isDataReady()) {};
-                			pos2d.setSpeed(0, 0);
-                			gripper.close();
-                			return true;
-                		}
-                		
-                	}
-                	
-                }
+
+            	if (tryLeftRight() == true) return true;
+            	
+                while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0.8, 0);
+            	try { Thread.sleep (250); } catch (Exception e) { }
+                while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, 0);
+            	if (tryLeftRight() == true) return true;
+            	
+                while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(-0.8, 0);
+            	try { Thread.sleep (500); } catch (Exception e) { }
+                while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, 0);
+            	if (tryLeftRight() == true) return true;
+            	
                 return false;
+
                
+        }
+        private boolean tryLeftRight() {
+            while(!gripper.isDataReady()) {};
+            if (gripper.getData().getBeams() != 0) {
+            	gripper.close();
+            	return true;
+            } else {
+            	// turn left
+            	while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, 0.1);
+            	double runFor1000 = System.currentTimeMillis()+1000;
+            	
+            	while(System.currentTimeMillis() < runFor1000) {
+            		while(!gripper.isDataReady()) {};
+            		if(gripper.getData().getBeams() != 0) {
+            			while(!pos2d.isDataReady()) {};
+            			pos2d.setSpeed(0, 0);
+            			gripper.close();
+            			return true;
+            		}
+            		
+            	}
+            	
+            	// turn right
+            	while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, -0.1);
+            	double runFor2000 = System.currentTimeMillis()+2000;
+            	while(System.currentTimeMillis() < runFor2000) {
+            		while(!gripper.isDataReady()) {};
+            		if(gripper.getData().getBeams() != 0) {
+            			while(!pos2d.isDataReady()) {};
+            			pos2d.setSpeed(0, 0);
+            			gripper.close();
+            			return true;
+            		}
+            		
+            	}
+            	// turn back to original
+            	while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, 0.4);
+            	try { Thread.sleep (250); } catch (Exception e) { }
+            	while(!pos2d.isDataReady()) {};
+            	pos2d.setSpeed(0, 0);
+
+            }
+            return false;
         }
 
         private void dockToGarbage(Point garbage) {
